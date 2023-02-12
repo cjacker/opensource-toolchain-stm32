@@ -59,7 +59,7 @@ led/main.c \
 led/systick.c
 
 # ASM sources
-ASM_SOURCES = startup_gd32f450_470.s
+ASM_SOURCES = GD32F4xx_Firmware_Library/startup_gd32f450_470.s
 
 
 #######################################
@@ -136,7 +136,7 @@ CFLAGS += -MMD -MP -MF"$(@:%.o=%.d)"
 # LDFLAGS
 #######################################
 # link script
-LDSCRIPT = gd32f470zgt6.ld
+LDSCRIPT = GD32F4xx_Firmware_Library/gd32f470zgt6.ld
 
 # libraries
 LIBS = -lc -lm -lnosys 
