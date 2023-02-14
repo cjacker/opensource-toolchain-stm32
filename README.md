@@ -291,7 +291,12 @@ Use LiangShan Pi with GD32F470ZGT6 as example:
 ```
 git clone https://github.com/cjacker/opensource-toolchain-stm32
 cd liangshan_pi_gd32f470zgt6_blink
+make
 ```
+
+The target elf/hex/bin files 'gd32f470zgt6.xxx' will be generated at `build` dir.
+
+
 
 
 
