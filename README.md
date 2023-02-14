@@ -11,8 +11,10 @@ There are also a lot of STM32 clones, such as GD32 / CH32 / MM32 etc. Most of th
 # Hardware prerequisites
 
 * A development board with STM32 MCU. In this tutorial, I will use STM32F1/F4/H7 and GD32, CH32. 
-* DAPLink or STLink or JLink.
-  - Most of so called xxLink from various vendors is DAPLink with SWD interface support.
+* STLink / JLink / Any CMSIS-DAP debugger
+  - for programming and debugging.
+* USB2TTL UART adapter
+  - for ISP programming of stm32f103, it do not support USB-DFU.
 
 # Toolchain overview
 
@@ -22,13 +24,11 @@ As any other ARM based MCUs, the toolchain for STM32 consists of:
 * Debugger: OpenOCD/gdb
 * SDKs: Various
   - official SPL in C
-  - official Cube/HAL in C
+  - STM32 Cube/HAL in C
   - libopencm3 in C
   - stm32-hal in rust
   - stm32-rs in rust
-  - gd32-hal/gd32-rs in rust for GD32F
-  - ch32-rs for CH32F
-* Flashing tool: ISP and OpenOCD.
+* Programming tool: dfu-util and OpenOCD.
 
 
 # Compiler
@@ -81,7 +81,6 @@ rustup target add thumbv6m-none-eabi
 rustup target add thumbv8m.main-none-eabihf
 ```
 
-
 # SDKs
 
 STM32 has a large, high-quality development ecosystem, there are various opensource tools and SDKs for STM32 development. 
@@ -103,6 +102,54 @@ For simple tasks such as blink a led, you can write some bare metal codes withou
 
 There are some baremetal demos in this repo for STMf1/f4/h7, you can take these demos as reference.
 
+## Official SPL
+
+**Note:** STM32 official SPLs was deprecated serveral years ago. it's recommend to use Cube/HAL instead of SPL.
+
+Standard Peripherals library covers 3 abstraction levels, and includes:
+
+* A complete register address mapping with all bits, bit fields and registers declared in C. This avoids a cumbersome task and more important, it brings the benefits of a bug free reference mapping file, speeding up the early project phase.
+
+* A collection of routines and data structures which covers all peripheral functions (drivers with common API). It can directly be used as a reference framework, since it also includes macros for supporting core-related intrinsic features and common constants and data types definition.
+
+* A set of examples covering all available peripherals with template projects for the most common development toolchains. With the appropriate hardware evaluation board, this allows to get started with a brand new micro within few hours.
+
+Each driver consists of a set of functions covering all peripheral functionalities. The development of each driver is driven by a common API (application programming interface) which standardizes the driver structure, the functions and the parameter names. The driver source code is developed in ‘Strict ANSI-C’ (relaxed ANSI-C for projects and example files). It is fully documented and is MISRA-C 2004 compliant. Writing the whole library in ‘Strict ANSI-C’ makes it independent from the software toolchain. Only the start-up files depend on the toolchain.
+
+All SPL packages can be downloaded from [here](https://www.st.com/en/embedded-software/stm32-standard-peripheral-libraries.html), you may need register an account and login first before download, available SPLs includes:
+
+```
+STSW-STM32048 	STM32F0xx standard peripherals library
+STSW-STM32054 	STM32F10x standard peripheral library 
+STSW-STM32115 	STM32F37x/F38x DSP and standard peripherals library
+STSW-STM32062 	STM32F2xx standard peripherals library (UM1061) 
+STSW-STM32065 	STM32F4 DSP and standard peripherals library
+STSW-STM32077   STM32L1xx standard peripherals library
+```
+
+You could notice there is no SPL for such as G4 or H7 etc, since SPL was deprecated, for such models, you should use Cube/HAL.
+
+The problem with SPL is all these libraries lack of 'Makefile' support, but you can found some forked repo which contains a 'Makefile'. 
+
+A lot of STM32 clones such as CH32F / GD32F also have this issue, their firmware library or StdPeriph library or EVT packages almost have the same project structure and code organization as STM32 SPL, I provided a demo project for GD32F470ZGT6 (LiangShan Pi board from JLC) to blink four LEDs. You can take is as reference how to write a Makefile for such libraries.
+
+As mentioned in bare metal programming section, you may also need to prepare a startup asm file (work with GCC) and a linker script. these files can be taken from libopencm3 or various other opensource projects. For stm32, you can also use stm32cubemx to generate the startup and linker script files, but it will not covered by this tutorial.
+
+Use LiangShan Pi with GD32F470ZGT6 as example, there is a demo project in this repo, the 'GD32F4xx_Firmware_Library' directly comes from GD32 official Demo Suite without any modifications. What I added is a linker script and a startup asm file for gd32f470, the 'led' dir contains blink source codes and a 'Makefile':
+
+```
+git clone https://github.com/cjacker/opensource-toolchain-stm32
+cd liangshan_pi_gd32f470zgt6_blink
+make
+```
+
+The target elf/hex/bin files 'gd32f470zgt6.xxx' will be generated at `build` dir. 
+
+## STM32 Cube/HAL
+
+STM32CubeMX is a graphical tool that allows a very easy configuration of STM32 microcontrollers and microprocessors, as well as the generation of the corresponding initialization C code. 
+
+STM32CubeMX can support generate 'Makefile' project for Linux and arm-gcc toolchain. It's very easy to use, just follow the wizard, select your mcu model, and choose 'Makefile' project, a skeleton of a new project will be generated and can use `make` to build.
 
 ## libopencm3
 
@@ -252,54 +299,73 @@ cargo build --features=stm32h743v,rt --example blinky --release
 ```
 the target elf file will be generated at `./target/thumbv7em-none-eabihf/release/examples/blinky`, it can be used to program to target device later.
 
+# Programming
 
+## ISP
 
-## SPL
+Almost every STM32 MCU has a bootloader, the bootloader is stored in the internal boot ROM (system memory) of STM32 devices, and is programmed by ST during production. Its main task is to download the application program to the internal Flash memory through one of the available serial peripherals (such as USART, CAN, USB, I2C, SPI).
 
-**Note:** STM32 official SPLs was deprecated serveral years ago. it's recommend to use Cube/HAL instead of SPL.
+you can refer to [AN2606](https://www.st.com/resource/en/application_note/cd00167594-stm32-microcontroller-system-memory-boot-mode-stmicroelectronics.pdf) to find out more information about the bootloader and parts list.
 
-Standard Peripherals library covers 3 abstraction levels, and includes:
+**Note:** Not all parts support USB DFU modes, for example, The embedded bootloader of STM32F103 does not provide DFU functionality as you can find in [AN2606](https://www.st.com/resource/en/application_note/cd00167594-stm32-microcontroller-system-memory-boot-mode-stmicroelectronics.pdf), table 3, it support UART ISP mode.
 
-* A complete register address mapping with all bits, bit fields and registers declared in C. This avoids a cumbersome task and more important, it brings the benefits of a bug free reference mapping file, speeding up the early project phase.
+### to activate ISP mode
 
-* A collection of routines and data structures which covers all peripheral functions (drivers with common API). It can directly be used as a reference framework, since it also includes macros for supporting core-related intrinsic features and common constants and data types definition.
+Usually, there is always a 'BOOT0' or/and 'BOOT1' buttons or jumpers on stm32 dev board. 
 
-* A set of examples covering all available peripherals with template projects for the most common development toolchains. With the appropriate hardware evaluation board, this allows to get started with a brand new micro within few hours.
+If the part support USB-DFU, to activate the bootloader (aka ISP mode), you need hold the 'BOOT0' button down and plug in USB port. if the target dev board already plugged in, you can hold the 'BOOT0' button down, press and release 'RESET' button, then release 'BOOT0' button.
 
-Each driver consists of a set of functions covering all peripheral functionalities. The development of each driver is driven by a common API (application programming interface) which standardizes the driver structure, the functions and the parameter names. The driver source code is developed in ‘Strict ANSI-C’ (relaxed ANSI-C for projects and example files). It is fully documented and is MISRA-C 2004 compliant. Writing the whole library in ‘Strict ANSI-C’ makes it independent from the software toolchain. Only the start-up files depend on the toolchain.
+If the part do not support USB-DFU such as STM32F103. you need to close the 'BOOT0' jumper to 3.3v and connect a USB2TTL adapter as:
+```
+USB2TTL : STM32F103
+3.3v   ->  3.3v
+TX     ->  RX(PA10)
+RX     ->  TX(PA9)
+GND    ->  GND
+``` 
 
-All SPL packages can be downloaded from [here](https://www.st.com/en/embedded-software/stm32-standard-peripheral-libraries.html), you may need register an account and login first before download, available SPLs includes:
+### ISP programming utilities
+
+#### UART ISP
+For stm32f103, the bootloader only support UART ISP, you need to use [stm32flash](https://sourceforge.net/p/stm32flash/wiki/Home/) to program the part.
+
+Download, build and install it:
 
 ```
-STSW-STM32048 	STM32F0xx standard peripherals library
-STSW-STM32054 	STM32F10x standard peripheral library 
-STSW-STM32115 	STM32F37x/F38x DSP and standard peripherals library
-STSW-STM32062 	STM32F2xx standard peripherals library (UM1061) 
-STSW-STM32065 	STM32F4 DSP and standard peripherals library
-STSW-STM32077   STM32L1xx standard peripherals library
-```
-
-You could notice there is no SPL for such as G4 or H7 etc, since SPL was deprecated, for such models, you should use Cube/HAL.
-
-The problem with SPL is all these libraries lack of 'Makefile' support, but you can found some forked repo which contains a 'Makefile'. 
-
-A lot of STM32 clones such as CH32F, GD32F also have this issue, their firmware library or StdPeriph library almost have the same project structure and code organization as STM32 SPL, I provided a demo project for GD32F470ZGT6 (LiangShan Pi board from JLC) to blink four LEDs. You can take is as reference how to write a Makefile for such libraries.
-
-As mentioned in bare metal programming section, you may also need to prepare a startup asm file (work with GCC) and a linker script. these files can be taken from libopencm3 or various other opensource projects.
-
-Use LiangShan Pi with GD32F470ZGT6 as example, there is a demo project in this repo, the 'GD32F4xx_Firmware_Library' directly comes from GD32 official Demo Suite without any modifications. What I added is a linker script and a startup asm file for gd32f470, the 'led' dir contains blink source codes and a 'Makefile':
-
-```
-git clone https://github.com/cjacker/opensource-toolchain-stm32
-cd liangshan_pi_gd32f470zgt6_blink
+wget "https://sourceforge.net/projects/stm32flash/files/stm32flash-0.7.tar.gz/download" -O stm32flash-0.7.tar.gz
+tar xf stm32flash-0.7.tar.gz
+cd stm32flash-0.7
+./configure --prefix=/usr
 make
+sudo make install
 ```
 
-The target elf/hex/bin files 'gd32f470zgt6.xxx' will be generated at `build` dir. 
+Refer to above section to find out how to activate the stm32f103 ISP MODE and how to connect to a USB2TTL UART adapter. then plug the adatper into USB port, and run:
+
+```
+stm32flash /dev/ttyUSB0
+```
+
+The output looks like:
+```
+Interface serial_posix: 57600 8E1
+Version      : 0x22
+Option 1     : 0x00
+Option 2     : 0x00
+Device ID    : 0x0410 (STM32F10xxx Medium-density)
+- RAM        : Up to 20KiB  (512b reserved by bootloader)
+- Flash      : Up to 128KiB (size first sector: 4x1024)
+- Option RAM : 16b
+- System RAM : 2KiB
+```
 
 
+#### USB-DFU 
+After ISP mode activated, if the part support USB DFU, run `lsusb`, the output looks like:
 
-
+```
+Bus 001 Device 040: ID 0483:df11 STMicroelectronics STM Device in DFU Mode
+```
 
 
 
