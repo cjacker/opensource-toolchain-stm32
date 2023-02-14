@@ -181,6 +181,9 @@ or run it on target device directly:
 cargo run --release
 ```
 
+The target elf file will be generated as `target/thumbv7em-none-eabihf/release/stm32h743vit6`, it can be programmed to target device later.
+
+
 
 
 
