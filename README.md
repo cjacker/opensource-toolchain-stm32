@@ -172,7 +172,7 @@ and set `target` to:
 target = "thumbv7em-none-eabihf"
 ```
 
-Then build the example:
+- Then build the example:
 ```
 cargo build --release
 ```
