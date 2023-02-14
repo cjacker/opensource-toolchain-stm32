@@ -1,0 +1,22 @@
+[target.'cfg(all(target_arch = "arm", target_os = "none"))']
+# Change this runner as required for your MCU.
+runner = "probe-run --chip STM32H743VITx" # to list chips, run `probe-run --list-chips.`
+rustflags = [
+  "-C", "linker=flip-link",
+  "-C", "link-arg=-Tlink.x",
+  "-C", "link-arg=-Tdefmt.x",
+  # This is needed if your flash or ram addresses are not aligned to 0x10000 in memory.x
+  # See https://github.com/rust-embedded/cortex-m-quickstart/pull/95
+  "-C", "link-arg=--nmagic",
+]
+
+[build]
+# Change this target as required for your MCU.
+target = "thumbv7em-none-eabihf" # Cortex-M4F and Cortex-M7F (eg F, L4, H7)
+# target = "thumbv6m-none-eabi"    # Cortex-M0 and Cortex-M0+ (eg G)
+# target = "thumbv8m.main-none-eabihf" # Cortex-M33F and Cortex-M35F (eg L5, U5)
+
+[alias]
+rb = "run --bin"
+rrb = "run --release --bin"
+rr = "run --release"
