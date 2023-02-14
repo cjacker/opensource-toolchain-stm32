@@ -22,8 +22,7 @@ As any other ARM based MCUs, the toolchain for STM32 consists of:
 * Debugger: OpenOCD/gdb
 * SDKs: Various
   - spl/stm32cube and libopencm3 in C
-  - stm32-rs and stm32-hal in rust
-  - gd32-rs in rust for GD32
+  - stm32-hal and stm32-rs in rust, gd32-rs (forked from stm32-hal) in rust for GD32
 * Flashing tool: ISP and OpenOCD.
 
 
@@ -65,18 +64,16 @@ curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 rustup default stable
 ```
 
-After rustup and default stable toolchain installed, you can install a specific target as need, usually the corresponding hal crate will tell you which target need to be installed. 
-
-For example, for stm32h7:
-
+After rustup and default stable toolchain installed, you can install some targets as need,
 ```
+# For Cortex-M4F and Cortex-M7F (eg F, L4, H7):
 rustup target add thumbv7em-none-eabihf
-```
 
-for stm32g0:
-
-```
+# For Cortex-M0 and Cortex-M0+ (eg G)
 rustup target add thumbv6m-none-eabi
+
+# For Cortex-M33F and Cortex-M35F (eg L5, U5):
+rustup target add thumbv8m.main-none-eabihf
 ```
 
 
@@ -84,19 +81,20 @@ rustup target add thumbv6m-none-eabi
 
 STM32 has a large, high-quality development ecosystem, there are various opensource tools and SDKs for STM32 development. 
 
-You can always write firmware which directly runs on the hardware without using any underlying software abstraction (So called bare metal programming). For ARM GCC, except the official SPL/STM32Cube libraries, there is [libopencm3](https://github.com/libopencm3/) which support STM32 very well. For Rust, there is [stm32-rs](https://github.com/stm32-rs), a series of community Rust support projects for STM32 microcontrollers which support a log of STM32 models, 
+You can always write firmware which directly runs on the hardware without using any underlying software abstraction (So called bare metal programming). For ARM GCC, except the official SPL/STM32Cube libraries, there is [libopencm3](https://github.com/libopencm3/) which support STM32 very well. For Rust, there is [stm32-hal](https://github.com/David-OConnor/stm32-hal) or [stm32-rs](https://github.com/stm32-rs) which support a lot of STM32 models, 
 
 ## Bare Metal
 
 For simple tasks such as blink a led, you can write some bare metal codes without depending on any libraries, usually a bare metal project of STM32 consists of: 
-- A Linker script which define the memory layout
-- A startup file in c or asm (typically written in assembly) which:
+
+- **A Linker script** which define the memory layout
+- **A startup file** in c or asm (typically written in assembly) which:
   + initialize the stack pointer
   + initialize the non-zero read/write-data in RAM
   + initialize the zero read/write-data in RAM
   + define the interrupt vector table
   + jump to the main function
-- A main function
+- **A main function**
 
 There are some baremetal demos in this repo for STMf1/f4/h7, you can take these demos as reference.
 
