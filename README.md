@@ -11,10 +11,12 @@ There are also a lot of STM32 clones, such as GD32 / CH32 / MM32 etc. Most of th
 # Hardware prerequisites
 
 * A development board with STM32 MCU. In this tutorial, I will use STM32F1/F4/H7 and GD32, CH32. 
-* STLink / JLink / Any CMSIS-DAP debugger
-  - for programming and debugging.
+* ST-LINK / DAPLink for programming and debugging.
+  - DAPLink is a cheap, opensource and standard way to program/debug any Cortex-M MCU.
+  - If you need work with STM8, buy a ST-Link. If not, buy a DAPLink.
+  - JLink can support SWD interface, but it's too expensive and not worth to buy for beginners.
 * USB2TTL UART adapter
-  - for ISP programming of stm32f103, it do not support USB-DFU.
+  - for ISP programming of stm32f103, it does not support USB-DFU.
 
 # Toolchain overview
 
@@ -28,7 +30,7 @@ As any other ARM based MCUs, the toolchain for STM32 consists of:
   - libopencm3 in C
   - stm32-hal in rust
   - stm32-rs in rust
-* Programming tool: dfu-util and OpenOCD.
+* Programming tool: stm32flash / dfu-util and OpenOCD.
 
 
 # Compiler
@@ -37,18 +39,18 @@ As any other ARM based MCUs, the toolchain for STM32 consists of:
 
 STM32 and various XX32 use the 'arm-none-eabi' GCC toolchain, since they all are based on Cortex-M. it's not neccesary to build the toolchain yourself, there are already a lot of well supported prebuilt release and already widely used by developers. 
 
-You can download the prebuilt toolchain for various host from https://developer.arm.com/downloads/-/arm-gnu-toolchain-downloads. 
+You can download the prebuilt toolchain for various host from https://developer.arm.com/downloads/-/gnu-rm. 
+
+**Note:** There is prebuilt arm-gcc v12.2 and can be downloaded from https://developer.arm.com/downloads/-/arm-gnu-toolchain-downloads, but the gdb debugger broken due to python issue, do not use the latest 12.2 version until python issue fixed.
 
 Download and extract the toolchain for x86_64 linux:
 
 ```
-wget "https://developer.arm.com/-/media/Files/downloads/gnu/12.2.rel
-1/binrel/arm-gnu-toolchain-12.2.rel1-x86_64-arm-none-eabi.tar.xz?rev=7bd049b7a3034e64885
-fa1a71c12f91d&hash=732D909FA8F68C0E1D0D17D08E057619" -O arm-gnu-toolchain-12.2.rel1-x86_64-arm-none-eabi.tar.xz
-sudo tar xf arm-gnu-toolchain-12.2.rel1-x86_64-arm-none-eabi.tar.xz -C /opt
+wget https://armkeil.blob.core.windows.net/developer/Files/downloads/gnu-rm/10.3-2021.10/gcc-arm-none-eabi-10.3-2021.10-x86_64-linux.tar.bz2
+sudo tar xf gcc-arm-none-eabi-10.3-2021.10-x86_64-linux.tar.bz2 -C /opt
 ```
 
-And add `/opt/arm-gnu-toolchain-12.2.rel1-x86_64-arm-none-eabi/bin` to PATH env of your shell.
+And add `/opt/gcc-arm-none-eabi-10.3-2021.10/bin` to PATH env of your shell.
 
 **NOTE:** the toolchain's tripplet is 'arm-none-eabi'.
 
@@ -533,7 +535,7 @@ Found DFU: [0483:df11] ver=2200, devnum=51, cfg=1, intf=0, path="1-3", alt=1, na
 Found DFU: [0483:df11] ver=2200, devnum=51, cfg=1, intf=0, path="1-3", alt=0, name="@Internal Flash  /0x08000000/04*016Kg,01*064Kg,03*128Kg", serial="337238533430"
 ```
 
-Then build the 'baremetal-stm32f4' in this repo and program it:
+Then build the 'baremetal-stm32f4' demo in this repo and program it:
 
 ```
 sudo dfu-util -a 0 -s 0x8000000 -RD app.bin
@@ -542,9 +544,127 @@ sudo dfu-util -a 0 -s 0x8000000 -RD app.bin
 
 ## ST-LINK
 
+You may noticed the ISP mode is not very convenient for daily use already. 
+
+The ST-LINK is the official in-circuit debugger and programmer for the STM8 and STM32 MCU. It use a 2-wire interface named 'SWD' to connect with STM32 target.
+
+```
+3.3v  -> 3.3v
+SWCLK -> SWCLK
+SWDIO -> SWDIO
+GND   -> GND
+```
+
+You need install the [stlink](https://github.com/stlink-org/stlink) tool to communicate with ST-LINK adatper, download and install it as:
+
+```
+git clone https://github.com/stlink-org/stlink.git
+cd stlink
+mkdir build
+cd build
+cmake -DSTLINK_UDEV_RULES_DIR=/etc/udev/rules.d -DSTLINK_STATIC_LIB=OFF ..
+make
+sudo make install
+```
+
+After installation, connect ST-LINK with target dev board (here use STM32F411) and plug it to PC USB port.
+
+Run `st-info --probe`, the output looks like:
+
+```
+Found 1 stlink programmers
+  version:    V2J27S6
+  serial:     55FF6B068683575549200767
+  flash:      524288 (pagesize: 16384)
+  sram:       131072
+  chipid:     0x0431
+  descr:      stm32f411re
+```
+
+Then build the 'baremetal-stm32f4' demo in this repo and program it:
+
+```
+st-flash write app.bin 0x8000000
+```
+
+You can also use OpenOCD with ST-LINK:
+
+```
+openocd -f /usr/share/openocd/scripts/interface/stlink.cfg -f /usr/share/openocd/scripts/target/stm32f4x.cfg -c "program app.elf verify reset exit"
+```
+
+If you use 'app.bin' in OpenOcd command, the start addr must be append, it should be 'program app.bin 0x8000000'.
+
+## DAPLink
+
+DAPLink provides a standardized way to access the Coresight Debug Access Port (DAP) of an ARM Cortex microcontroller via USB. Usually it supports both SWD and serial ports. the connection method is as same as ST-Link.
+
+```
+3.3v  -> 3.3v
+SWCLK -> SWCLK
+SWDIO -> SWDIO
+GND   -> GND
+```
+
+Still use stm32f411 as target, build the 'baremetal-stm32f4' demo in this repo and program it:
+
+```
+openocd -f /usr/share/openocd/scripts/interface/cmsis-dap.cfg -f /usr/share/openocd/scripts/target/stm32f4x.cfg -c "program app.elf verify reset exit"
+```
+
+## JLink
+
+Segger J-Link support ARMs Serial Wire Debug (SWD), but the utilities is all close sourced, and it's too expensive, not worth to buy for beginners. how to use it will not covered by this tutorial.
+
+Since I had a JLink, what I had to mentioned here for beginners is: 'do not forget to connect the VTRef pin to target device'.
 
 
+# Debugging
 
+Build the codes with debug infomation and connect the ST-Link or DAPLink as mentioned above, launch OpenOCD as:
+```
+openocd -f /usr/share/openocd/scripts/interface/cmsis-dap.cfg -f /usr/share/openocd/scripts/target/stm32f4x.cfg
+```
+If you use ST-Link, change 'cmsis-dap.cfg' to 'st-link.cfg'.
 
+The output looks like:
+```
+Info : Listening on port 6666 for tcl connections
+Info : Listening on port 4444 for telnet connections
+Info : Using CMSIS-DAPv2 interface with VID:PID=0x1a86:0x8012, serial=C7AA8F064C85
+Info : CMSIS-DAP: SWD supported
+Info : CMSIS-DAP: FW Version = 2.0.0
+Info : CMSIS-DAP: Interface Initialised (SWD)
+Info : SWCLK/TCK = 1 SWDIO/TMS = 1 TDI = 0 TDO = 0 nTRST = 0 nRESET = 0
+Info : CMSIS-DAP: Interface ready
+Info : clock speed 2000 kHz
+Info : SWD DPIDR 0x2ba01477
+Info : [stm32f4x.cpu] Cortex-M4 r0p1 processor detected
+Info : [stm32f4x.cpu] target has 6 breakpoints, 4 watchpoints
+Info : starting gdb server for stm32f4x.cpu on 3333
+Info : Listening on port 3333 for gdb connections
+Info : accepting 'gdb' connection on tcp/3333
+```
 
+Start another terminal window, run:
 
+```
+arm-none-eabi-gdb ./app.elf
+(gdb) target remote :3333
+Remote debugging using :3333
+0x0800006e in main () at main.c:63
+63              for (int i = 0; i < 1000000; i++); // arbitrary delay
+(gdb) load
+Loading section .text, size 0x8c lma 0x8000000
+Start address 0x08000000, load size 140
+Transfer rate: 206 bytes/sec, 140 bytes/write.
+(gdb) break main
+Breakpoint 1 at 0x8000016: file main.c, line 26.
+Note: automatically using hardware breakpoints for read-only addresses.
+(gdb) continue
+Continuing.
+
+Breakpoint 1, main () at main.c:26
+26          RCC_AHB1ENR |= 0x00000006;
+
+```
