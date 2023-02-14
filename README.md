@@ -287,14 +287,15 @@ A lot of STM32 clones such as CH32F, GD32F also have this issue, their firmware 
 
 As mentioned in bare metal programming section, you may also need to prepare a startup asm file (work with GCC) and a linker script. these files can be taken from libopencm3 or various other opensource projects.
 
-Use LiangShan Pi with GD32F470ZGT6 as example:
+Use LiangShan Pi with GD32F470ZGT6 as example, there is a demo project in this repo, the 'GD32F4xx_Firmware_Library' directly comes from GD32 official Demo Suite without any modifications. What I added is a linker script and a startup asm file for gd32f470, the 'led' dir contains blink source codes and a 'Makefile':
+
 ```
 git clone https://github.com/cjacker/opensource-toolchain-stm32
 cd liangshan_pi_gd32f470zgt6_blink
 make
 ```
 
-The target elf/hex/bin files 'gd32f470zgt6.xxx' will be generated at `build` dir.
+The target elf/hex/bin files 'gd32f470zgt6.xxx' will be generated at `build` dir. 
 
 
 
