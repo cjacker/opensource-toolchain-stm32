@@ -324,9 +324,10 @@ RX     ->  TX(PA9)
 GND    ->  GND
 ``` 
 
-### ISP programming utilities
+### ISP programming
 
 #### UART ISP
+
 For stm32f103, the bootloader only support UART ISP, you need to use [stm32flash](https://sourceforge.net/p/stm32flash/wiki/Home/) to program the part.
 
 Download, build and install it:
@@ -459,15 +460,90 @@ After command excuted successfully, the LED controled by PC13 will blink.
 
 **NOTE 1:** If use `-g 0x0` to start excution, the target device will exit ISP mode, you need to replug it to activate the ISP mode again.
 
-**NOTE 2:** Do NOT forget restore the jumper to start the device from flash.
+**NOTE 2:** Do NOT forget to restore the jumper to start the device from flash.
 
 
-#### USB-DFU 
-After ISP mode activated, if the part support USB DFU, run `lsusb`, the output looks like:
+#### USB-DFU
+
+Use a stm32f411ceu6 [board](https://github.com/WeActStudio/WeActStudio.MiniSTM32F4x1) as example, after ISP mode activated, run `lsusb`, the output looks like:
 
 ```
 Bus 001 Device 040: ID 0483:df11 STMicroelectronics STM Device in DFU Mode
 ```
+
+You need use [dfu-util](https://dfu-util.sourceforge.net/) to program, download and install it as:
+```
+wget https://dfu-util.sourceforge.net/releases/dfu-util-0.11.tar.gz
+tar xf dfu-util-0.11.tar.gz
+cd dfu-util-0.11
+./configure --prefix=/usr
+make 
+sudo make install
+```
+
+Run `dfu-util -h` to print the usage:
+```
+Usage: dfu-util [options] ...
+  -h --help                     Print this help message
+  -V --version                  Print the version number
+  -v --verbose                  Print verbose debug statements
+  -l --list                     List currently attached DFU capable devices
+  -e --detach                   Detach currently attached DFU capable devices
+  -E --detach-delay seconds     Time to wait before reopening a device after detach
+  -d --device <vendor>:<product>[,<vendor_dfu>:<product_dfu>]
+                                Specify Vendor/Product ID(s) of DFU device
+  -n --devnum <dnum>            Match given device number (devnum from --list)
+  -p --path <bus-port. ... .port>       Specify path to DFU device
+  -c --cfg <config_nr>          Specify the Configuration of DFU device
+  -i --intf <intf_nr>           Specify the DFU Interface number
+  -S --serial <serial_string>[,<serial_string_dfu>]
+                                Specify Serial String of DFU device
+  -a --alt <alt>                Specify the Altsetting of the DFU Interface
+                                by name or by number
+  -t --transfer-size <size>     Specify the number of bytes per USB Transfer
+  -U --upload <file>            Read firmware from device into <file>
+  -Z --upload-size <bytes>      Specify the expected upload size in bytes
+  -D --download <file>          Write firmware from <file> into device
+  -R --reset                    Issue USB Reset signalling once we're finished
+  -w --wait                     Wait for device to appear
+  -s --dfuse-address address<:...>      ST DfuSe mode string, specifying target
+                                address for raw file download or upload (not
+                                applicable for DfuSe file (.dfu) downloads).
+                                Add more DfuSe options separated with ':'
+                leave           Leave DFU mode (jump to application)
+                mass-erase      Erase the whole device (requires "force")
+                unprotect       Erase read protected device (requires "force")
+                will-reset      Expect device to reset (e.g. option bytes write)
+                force           You really know what you are doing!
+                <length>        Length of firmware to upload from device
+```
+
+Run `dfu-util -l` to found the target device:
+```
+dfu-util 0.11
+
+Copyright 2005-2009 Weston Schmidt, Harald Welte and OpenMoko Inc.
+Copyright 2010-2021 Tormod Volden and Stefan Schmidt
+This program is Free Software and has ABSOLUTELY NO WARRANTY
+Please report bugs to http://sourceforge.net/p/dfu-util/tickets/
+
+Found DFU: [0483:df11] ver=2200, devnum=51, cfg=1, intf=0, path="1-3", alt=3, name="@Device Feature/0xFFFF0000/01*004 e", serial="337238533430"
+Found DFU: [0483:df11] ver=2200, devnum=51, cfg=1, intf=0, path="1-3", alt=2, name="@OTP Memory /0x1FFF7800/01*512 e,01*016 e", serial="337238533430"
+Found DFU: [0483:df11] ver=2200, devnum=51, cfg=1, intf=0, path="1-3", alt=1, name="@Option Bytes  /0x1FFFC000/01*016 e", serial="337238533430"
+Found DFU: [0483:df11] ver=2200, devnum=51, cfg=1, intf=0, path="1-3", alt=0, name="@Internal Flash  /0x08000000/04*016Kg,01*064Kg,03*128Kg", serial="337238533430"
+```
+
+Then build the 'baremetal-stm32f4' in this repo and program it:
+
+```
+sudo dfu-util -a 0 -s 0x8000000 -RD app.bin
+```
+
+
+## ST-LINK
+
+
+
 
 
 
