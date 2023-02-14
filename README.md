@@ -171,6 +171,8 @@ and set `target` to:
 ```
 target = "thumbv7em-none-eabihf"
 ```
+- change `memory.x`(the linker script for rust) according to your MCU.
+If you really do NOT know how to change this `memory.x` file, you can refer to a corresponding linker script of SPL or libopencm3.
 
 - Then build the example:
 ```
