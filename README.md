@@ -103,28 +103,53 @@ For simple tasks such as blink a led, you can write some bare metal codes withou
 
 There are some baremetal demos in this repo for STMf1/f4/h7, you can take these demos as reference.
 
-## SPL
 
-Standard Peripherals library covers 3 abstraction levels, and includes:
+## libopencm3
 
-* A complete register address mapping with all bits, bit fields and registers declared in C. This avoids a cumbersome task and more important, it brings the benefits of a bug free reference mapping file, speeding up the early project phase.
+The libopencm3 project aims to create an open-source firmware library for various ARM Cortex-M microcontrollers. It not only support STM32 but also support a lot of MCU models from other vendors.
 
-* A collection of routines and data structures which covers all peripheral functions (drivers with common API). It can directly be used as a reference framework, since it also includes macros for supporting core-related intrinsic features and common constants and data types definition.
+Currently (at least partly) supported microcontrollers:
 
-* A set of examples covering all available peripherals with template projects for the most common development toolchains. With the appropriate hardware evaluation board, this allows to get started with a brand new micro within few hours.
+- ST STM32 F0xx/F1xx/F2xx/F30x/F37x/F4xx/F7xx/H7xx series
+- ST STM32 G0xx G4xx L0xx L1xx L4xx series
+- Atmel SAM3A/3N/3S/3U/3X series, as well as SAMDxx and friends
+- NXP LPC1311/13/17/42/43
+- Stellaris LM3S series (discontinued, without replacement)
+- TI (Tiva) LM4F series (continuing as TM4F, pin and peripheral compatible)
+- EFM32 Gecko series (only core support)
+- Freescale Vybrid VF6xx
+- Qorvo (formerly ActiveSemi) PAC55XX
+- Synwit SWM050
+- Nordic NRF51x and NRF52x
 
-Each driver consists of a set of functions covering all peripheral functionalities. The development of each driver is driven by a common API (application programming interface) which standardizes the driver structure, the functions and the parameter names. The driver source code is developed in ‘Strict ANSI-C’ (relaxed ANSI-C for projects and example files). It is fully documented and is MISRA-C 2004 compliant. Writing the whole library in ‘Strict ANSI-C’ makes it independent from the software toolchain. Only the start-up files depend on the toolchain.
 
-All SPL packages can be downloaded from https://www.st.com/en/embedded-software/stm32-standard-peripheral-libraries.html. includes:
+The library is written completely from scratch based on the vendor datasheets, programming manuals, and application notes. The code is meant to be used with a GCC toolchain for ARM (arm-elf or arm-none-eabi), flashing of the code to a microcontroller can be done using the OpenOCD ARM JTAG software.
+
+Here use WeAct MiniH7xx board (stm32h743vit6) as example, a LED is controled by PE3.
 
 ```
-STSW-STM32048 	STM32F0xx standard peripherals library
-STSW-STM32054 	STM32F10x standard peripheral library 
-STSW-STM32115 	STM32F37x/F38x DSP and standard peripherals library
-STSW-STM32062 	STM32F2xx standard peripherals library (UM1061) 
-STSW-STM32065 	STM32F4 DSP and standard peripherals library
-STSW-STM32077   STM32L1xx standard peripherals library
+git clone https://github.com/libopencm3/libopencm3-miniblink.git
+cd libopencm3-miniblink
+# checkout the libopencm3 submodule
+git submodule update --init --progress
 ```
+
+Modify `boards.stm32.mk`, add a line:
+```
+$(eval $(call stm32h7board,weact-studio-minih7xx,GPIOE,GPIO3))
+```
+
+Then build it as:
+```
+make
+```
+
+The target elf file will be generated at `bin/stm32/weact-studio-minih7xx.elf`, it can be programmed to target device later.
+
+You may also found there are some other board files live in the top dir of libopencm3-miniblink, as mentioned above, libopencm3 can support a lot of other MCU models not limited to STM32, acctually, this library can also be used with EFM32 from silicon labs, NRF52 from Nordic, etc.
+
+libopencm3-miniblink is only a demo project to demo how to use this library, it's a good start to learn how to build a project with libopencm3.
+
 
 ## stm32-hal
 
@@ -228,6 +253,29 @@ cargo build --features=stm32h743v,rt --example blinky --release
 the target elf file will be generated at `./target/thumbv7em-none-eabihf/release/examples/blinky`, it can be used to program to target device later.
 
 
+
+## SPL
+
+Standard Peripherals library covers 3 abstraction levels, and includes:
+
+* A complete register address mapping with all bits, bit fields and registers declared in C. This avoids a cumbersome task and more important, it brings the benefits of a bug free reference mapping file, speeding up the early project phase.
+
+* A collection of routines and data structures which covers all peripheral functions (drivers with common API). It can directly be used as a reference framework, since it also includes macros for supporting core-related intrinsic features and common constants and data types definition.
+
+* A set of examples covering all available peripherals with template projects for the most common development toolchains. With the appropriate hardware evaluation board, this allows to get started with a brand new micro within few hours.
+
+Each driver consists of a set of functions covering all peripheral functionalities. The development of each driver is driven by a common API (application programming interface) which standardizes the driver structure, the functions and the parameter names. The driver source code is developed in ‘Strict ANSI-C’ (relaxed ANSI-C for projects and example files). It is fully documented and is MISRA-C 2004 compliant. Writing the whole library in ‘Strict ANSI-C’ makes it independent from the software toolchain. Only the start-up files depend on the toolchain.
+
+All SPL packages can be downloaded from https://www.st.com/en/embedded-software/stm32-standard-peripheral-libraries.html. includes:
+
+```
+STSW-STM32048 	STM32F0xx standard peripherals library
+STSW-STM32054 	STM32F10x standard peripheral library 
+STSW-STM32115 	STM32F37x/F38x DSP and standard peripherals library
+STSW-STM32062 	STM32F2xx standard peripherals library (UM1061) 
+STSW-STM32065 	STM32F4 DSP and standard peripherals library
+STSW-STM32077   STM32L1xx standard peripherals library
+```
 
 
 
