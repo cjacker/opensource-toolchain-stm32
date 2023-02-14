@@ -18,15 +18,17 @@ There are also a lot of STM32 clones, such as GD32 / CH32 / MM32 etc. Most of th
 
 As any other ARM based MCUs, the toolchain for STM32 consists of:
 
-* Compiler: ARM GCC toolchain
+* Compiler: GCC / Rust
 * Debugger: OpenOCD/gdb
-* SDKs
+* SDKs: Various
 * Flashing tool: ISP and OpenOCD.
 
 
-# ARM GCC toolchain
+# Compiler
 
-STM32 use the 'arm-none-eabi' GCC toolchain. it's not neccesary to build the toolchain yourself, since there are already a lot of well supported prebuilt release and already widely used by developers. 
+## GCC
+
+STM32 and various XX32 use the 'arm-none-eabi' GCC toolchain, since they all are based on Cortex-M. it's not neccesary to build the toolchain yourself, there are already a lot of well supported prebuilt release and already widely used by developers. 
 
 You can download the prebuilt toolchain for various host from https://developer.arm.com/downloads/-/arm-gnu-toolchain-downloads. 
 
@@ -45,7 +47,46 @@ And add `/opt/arm-gnu-toolchain-12.2.rel1-x86_64-arm-none-eabi/bin` to PATH env 
 
 There are also a lot of prebuilt 'arm-none-eabi' toolchains from other vendors, you can use them, the installation process is almost same.
 
+## Rust
+
+These years, as the Rust language evolves, it can be used for MCU development.
+
+Building rust is not a easy task for beginners, the easiest way to install rust toolchain is [rustup](https://rust-lang.github.io/rustup/).
+
+Install rustup:
+
+```
+# install rustup
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+# install stable toolchain, it will install various components, such as rustc, rust-std, cargo ...
+rustup default stable
+```
+
+After rustup and default stable toolchain installed, you can install a specific target as need, usually the corresponding hal crate can tell us the target need to be installed. For example, for stm32h7:
+
+```
+rustup target add thumbv7em-none-eabihf
+```
+
 # SDKs
+
+STM32 has a large, high-quality development ecosystem, there are various opensource tools and SDKs for STM32 development. 
+
+You can always write firmware which directly runs on the hardware without using any underlying software abstraction (So called bare metal programming). For ARM GCC, except the official SPL/STM32Cube libraries, there is [libopencm3](https://github.com/libopencm3/) which support STM32 very well. For Rust, there is [stm32-rs](https://github.com/stm32-rs), a series of community Rust support projects for STM32 microcontrollers which support a log of STM32 models, 
+
+## Bare Metal
+
+For simple tasks such as blink a led, you can write some bare metal codes without depending on any libraries, usually a bare metal project of STM32 consists of: 
+- A Linker script which define the memory layout
+- A startup file in c or asm (typically written in assembly) which:
+  + initialize the stack pointer
+  + initialize the non-zero read/write-data in RAM
+  + initialize the zero read/write-data in RAM
+  + define the interrupt vector table
+  + jump to the main function
+- A main function
+
+There are some baremetal demos in this repo for STMf1/f4/h7, you can take these demos as reference.
 
 ## SPL
 
