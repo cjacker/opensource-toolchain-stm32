@@ -21,8 +21,8 @@ As any other ARM based MCUs, the toolchain for STM32 consists of:
 * Compiler: GCC / Rust
 * Debugger: OpenOCD/gdb
 * SDKs: Various
-  - SPL in C
-  - stm32cube in C
+  - official SPL in C
+  - official Cube/HAL in C
   - libopencm3 in C
   - stm32-hal in rust
   - stm32-rs in rust
@@ -256,6 +256,8 @@ the target elf file will be generated at `./target/thumbv7em-none-eabihf/release
 
 ## SPL
 
+**Note:** STM32 official SPLs was deprecated serveral years ago. it's recommend to use Cube/HAL instead of SPL.
+
 Standard Peripherals library covers 3 abstraction levels, and includes:
 
 * A complete register address mapping with all bits, bit fields and registers declared in C. This avoids a cumbersome task and more important, it brings the benefits of a bug free reference mapping file, speeding up the early project phase.
@@ -266,7 +268,7 @@ Standard Peripherals library covers 3 abstraction levels, and includes:
 
 Each driver consists of a set of functions covering all peripheral functionalities. The development of each driver is driven by a common API (application programming interface) which standardizes the driver structure, the functions and the parameter names. The driver source code is developed in ‘Strict ANSI-C’ (relaxed ANSI-C for projects and example files). It is fully documented and is MISRA-C 2004 compliant. Writing the whole library in ‘Strict ANSI-C’ makes it independent from the software toolchain. Only the start-up files depend on the toolchain.
 
-All SPL packages can be downloaded from https://www.st.com/en/embedded-software/stm32-standard-peripheral-libraries.html. includes:
+All SPL packages can be downloaded from [here](https://www.st.com/en/embedded-software/stm32-standard-peripheral-libraries.html), you may need register an account and login first before download, available SPLs includes:
 
 ```
 STSW-STM32048 	STM32F0xx standard peripherals library
@@ -276,6 +278,23 @@ STSW-STM32062 	STM32F2xx standard peripherals library (UM1061)
 STSW-STM32065 	STM32F4 DSP and standard peripherals library
 STSW-STM32077   STM32L1xx standard peripherals library
 ```
+
+You could notice there is no SPL for such as G4 or H7 etc, since SPL was deprecated, for such models, you should use Cube/HAL.
+
+The problem with SPL is all these libraries lack of 'Makefile' support, but you can found some forked repo which contains a 'Makefile'. 
+
+A lot of STM32 clones such as CH32F, GD32F also have this issue, their firmware library or StdPeriph library almost have the same project structure and code organization as STM32 SPL, I provided a demo project for GD32F470ZGT6 (LiangShan Pi board from JLC) to blink four LEDs. You can take is as reference how to write a Makefile for such libraries.
+
+As mentioned in bare metal programming section, you may also need to prepare a startup asm file (work with GCC) and a linker script. these files can be taken from libopencm3 or various other opensource projects.
+
+Use LiangShan Pi with GD32F470ZGT6 as example:
+```
+git clone https://github.com/cjacker/opensource-toolchain-stm32
+cd liangshan_pi_gd32f470zgt6_blink
+```
+
+
+
 
 
 
