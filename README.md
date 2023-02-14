@@ -121,4 +121,66 @@ STSW-STM32065 	STM32F4 DSP and standard peripherals library
 STSW-STM32077   STM32L1xx standard peripherals library
 ```
 
+## stm32-hal
+
+[stm32-hal](https://github.com/David-OConnor/stm32-hal) rust library provides high-level access to STM32 peripherals.
+
+- Provide high-level access to most STM32 peripherals
+- Support these STM32 families: F3, F4, L4, L5, G, H, U, and W
+- Allow switching MCUs with minimal code change
+- Provide a consistent API across peripheral modules
+- Support both DMA and non-DMA interfaces
+- Be suitable for commercial projects
+- Provide a clear, concise API
+- Provide source code readable by anyone cross-checking a reference manual (RM)
+
+Before using this library, you need have rust toolchain and some utilities installed. please refer to above Compiler section for toolchain and desire target installation. besides the toolchain, you also need to install `flip-link` and `probe-run` to use stm32-hal:
+
+```
+cargo install flip-link
+cargo install probe-run
+```
+
+Please make sure the `~/.cargo/bin` is in your PATH env.
+
+After everything ready, clone this repo and find the `rust-stm32-hal-stm32h7` example, this example is modified from [stm32-hal quickstart repo](https://github.com/David-OConnor/stm32-hal-quickstart) to blink LED of [WeAct MiniH7XX board](https://github.com/WeActStudio/MiniSTM32H7xx). 
+
+You may need:
+- modify the below line of `Cargo.toml` to match your MCU:
+```
+stm32-hal2 = { version = "^1.5.0", features = ["l4x3", "l4rt"]}
+```
+For stm32h743vit6:
+```
+stm32-hal2 = { version = "^1.5.5", features = ["h743v", "h7rt"]}
+```
+
+Please refer to [`Cargo.toml`](https://github.com/David-OConnor/stm32-hal/blob/main/Cargo.toml) of stm32-hal project to learn how to specify features for your MCUs.
+
+- modify the `runner` and `target` line of `.cargo/config.toml`
+For stm32h743vit6, it should changed from:
+```
+runner = "probe-run --chip STM32L443CCTx"
+```
+to:
+```
+runner = "probe-run --chip STM32H743VITx"
+```
+
+and set `target` to:
+```
+target = "thumbv7em-none-eabihf"
+```
+
+Then build the example:
+```
+cargo build --release
+```
+or run it on target device directly:
+```
+cargo run --release
+```
+
+
+
 
