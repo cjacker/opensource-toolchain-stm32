@@ -62,11 +62,20 @@ curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 rustup default stable
 ```
 
-After rustup and default stable toolchain installed, you can install a specific target as need, usually the corresponding hal crate can tell us the target need to be installed. For example, for stm32h7:
+After rustup and default stable toolchain installed, you can install a specific target as need, usually the corresponding hal crate will tell you which target need to be installed. 
+
+For example, for stm32h7:
 
 ```
 rustup target add thumbv7em-none-eabihf
 ```
+
+for stm32g0:
+
+```
+rustup target add thumbv6m-none-eabi
+```
+
 
 # SDKs
 
