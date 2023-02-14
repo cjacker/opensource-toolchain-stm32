@@ -21,8 +21,13 @@ As any other ARM based MCUs, the toolchain for STM32 consists of:
 * Compiler: GCC / Rust
 * Debugger: OpenOCD/gdb
 * SDKs: Various
-  - spl/stm32cube and libopencm3 in C
-  - stm32-hal and stm32-rs in rust, gd32-rs (forked from stm32-hal) in rust for GD32
+  - SPL in C
+  - stm32cube in C
+  - libopencm3 in C
+  - stm32-hal in rust
+  - stm32-rs in rust
+  - gd32-hal/gd32-rs in rust for GD32F
+  - ch32-rs for CH32F
 * Flashing tool: ISP and OpenOCD.
 
 
