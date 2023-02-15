@@ -12,6 +12,8 @@ MEMORY
 {
   RAM (xrw)      : ORIGIN = 0x20000000, LENGTH = RAM_SIZE
   FLASH (rx)      : ORIGIN = 0x8000000, LENGTH = FLASH_SIZE
+  /* only for gd32f4 
+  TCMRAM (rw)     : ORIGIN = 0x10000000, LENGTH = TCMRAM_SIZE */
 }
 
 /* Define output sections */
@@ -111,6 +113,18 @@ SECTIONS
     __bss_end__ = _ebss;
   } >RAM
 
+  /* only for gd32f4 
+  .tcmram :
+  {
+    . = ALIGN(4);
+    _stcmram = .;
+    *(.tcmram)
+    *(.tcmram*)
+
+    . = ALIGN(4);
+    _etcmram = .; 
+  } >TCMRAM AT> FLASH */
+  
   /* User_heap_stack section, used to check that there is enough RAM left */
   ._user_heap_stack :
   {
