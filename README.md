@@ -117,10 +117,10 @@ For simple tasks such as blink a led, you can write some bare metal codes withou
 
 There are some baremetal demos in this repo for stm32f1/f4/h7 (what I have when written this tutorial), you can take these demos as reference.
 
-## Official SPL / EVT /DemoSuite
+## Official SPL / EVT /Demo Suite
 
 Part vendors will provide a standard peripherals library for each part model or a part family. ST STM32 call it as 'SPL', WCH CH32F call it as 'EVT' and GigaDevice GD32F call it as 'Demo Suite'. They 
-all have the similar project structure and organization, all are very similar to STM32 'SPL'.
+all have the similar project structure and organization, and all are very similar to STM32 'SPL'.
 
 **Note:** stm32 'SPL' was deprecated serveral years ago by stm32cube. it's recommend to use Cube/HAL with stm32 instead of 'SPL'.
 
@@ -142,15 +142,13 @@ STSW-STM32077   STM32L1xx standard peripherals library
 
 You could already notice there is no SPL for such as stm32 G4 or H7, since SPL was deprecated, for such models, you should use Cube/HAL.
 
-The problem of these SPLs is all of them lack 'Makefile' support and maybe also lack gcc supporting, most of them are designed to use with Keil MDK or other commercial IDE. but you may found some forked repo which port to GCC and Makefile.
+The problem of these SPLs is all of them lack 'Makefile' support and maybe also lack gcc support, most of them are designed to use with Keil MDK or other commercial IDE. but you may found some forked repo which port to GCC and Makefile.
 
-A lot of STM32 clones such as CH32F / GD32F also have this issue, I provided a demo project in this repo for GD32F470ZGT6 (LiangShan Pi board from JLC) to blink four LEDs. You can take is as reference how to write a Makefile for such libraries.
+A lot of STM32 clones such as CH32F / GD32F also have this issue, I make a '[ch32f evt convertor](https://github.com/cjacker/ch32f_evt_makefile_gcc_project_template)' to help developers convert the WCH official EVT packages, make it support GCC and Makefile. And the pre-converted [CH32F103EVT](https://github.com/cjacker/ch32f103evt_gcc_makefile) and [CH32F20xEVT](https://github.com/cjacker/ch32f20xevt_gcc_makefile) already upload to github. you can use these pre-converted libraries or convert it by yourself.
 
-you may also need a linker script and startup file, the startup file can be converted from the ARM startup file shipped in vendor's package with [startupfile_generator.py](https://raw.githubusercontent.com/cjacker/opensource-toolchain-stm32/main/startupfile_generator.py), this tool is taken from 'platform-gd32'. and there is [Linker script template](https://raw.githubusercontent.com/cjacker/opensource-toolchain-stm32/main/ldscript.template.ld) here, you can modify it according to your MCU.
+If you want to convert other xx32 firmware library, you need write a linker script and a startup asm file for it. The startup file can be converted from the ARM startup file shipped in vendor's package with [startupfile_generator.py](https://raw.githubusercontent.com/cjacker/opensource-toolchain-stm32/main/startupfile_generator.py), this tool is taken and modified from 'platform-gd32'. and there is also a [Linker script template](https://raw.githubusercontent.com/cjacker/opensource-toolchain-stm32/main/ldscript.template.ld) provided, you can modify it according to your MCU.
 
-Also I make a '[ch32f evt convertor](https://github.com/cjacker/ch32f_evt_makefile_gcc_project_template)' to help developers convert the official WCH EVT packages directly to support GCC and Makefile.
-
-Use LiangShan Pi with GD32F470ZGT6 as example, there is a demo project in this repo, the 'GD32F4xx_Firmware_Library' directly comes from GD32 official Demo Suite without any modifications. What I added is a linker script and a startup asm file for gd32f470, the 'led' dir contains blink source codes and a 'Makefile':
+I also provided a demo project in this repo for GD32F470ZGT6 (LiangShan Pi board from JLC) to blink four LEDs. The 'GD32F4xx_Firmware_Library' directly comes from GD32 official Demo Suite without any modifications. What I added is a linker script and a startup asm file for gd32f470.
 
 ```
 git clone https://github.com/cjacker/opensource-toolchain-stm32
