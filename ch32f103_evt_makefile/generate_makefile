@@ -1,0 +1,27 @@
+#!/bin/sh
+
+#always remove main.c in currentdir, it should already mv to User dir
+rm -f main.c
+
+# drop lower s
+rm -f Startup/*.s
+
+sed -i "s/define\t__PACKED\t\t\t__packed/define __PACKED __attribute__((packed))/g" StdPeriphDriver/inc/ch32f10x_usb.h
+sed -i "s/__packed/__PACKED/g" StdPeriphDriver/inc/ch32f10x_usb.h
+
+sed -i "s/__align( 4 )/__attribute__((aligned(4)))/g" StdPeriphDriver/src/ch32f10x_usb_host.c
+
+sed -i "s/unsigned int SystemCoreClock/uint32_t SystemCoreClock/g" User/system_ch32f10x.h
+
+sed -i "s/\"strexh %0, %2, \[%1\]\" \: \"=r\"/\"strexh %0, %2, \[%1\]\" \: \"=\&r\"/g"  CMSIS/core_cm3.c
+sed -i "s/\"strexb %0, %2, \[%1\]\" \: \"=r\"/\"strexb %0, %2, \[%1\]\" \: \"=\&r\"/g"  CMSIS/core_cm3.c
+ 
+# collect sources and asms.
+find . -type f -name "*.c"|sed 's@^\./@@g;s@$@ \\@g' > c_source.list
+find . -name \*.S|sed 's@^\./@@g;s@$@ \\@g'|head -n 1 > startup_asm_source.list
+
+sed "s/C_SOURCE_LIST/$(sed -e 's/[\&/]/\\&/g' -e 's/$/\\n/' c_source.list | tr -d '\n')/" Makefile.ch32ftemplate >Makefile
+sed -i "s/STARTUP_ASM_SOURCE_LIST/$(sed -e 's/[\&/]/\\&/g' -e 's/$/\\n/' startup_asm_source.list | tr -d '\n'|head -n 1)/" Makefile
+
+rm -f c_source.list startup_asm_source.list
+
