@@ -116,9 +116,11 @@ For simple tasks such as blink a led, you can write some bare metal codes withou
 
 There are some baremetal demos in this repo for STMf1/f4/h7, you can take these demos as reference.
 
-## Official SPL
+## Official SPL / EVT /DemoSuite
 
-**Note:** STM32 official SPLs was deprecated serveral years ago. it's recommend to use Cube/HAL instead of SPL.
+ST STM32 use the name 'SPL', WCH CH32F use the name 'EVT' and GigaDevice GD32F use the name 'Demo Suite'.
+
+**Note:** STM32 official SPLs was deprecated serveral years ago. it's recommend to use Cube/HAL with STM32 instead of SPL.
 
 Standard Peripherals library covers 3 abstraction levels, and includes:
 
@@ -143,7 +145,7 @@ STSW-STM32077   STM32L1xx standard peripherals library
 
 You could notice there is no SPL for such as G4 or H7 etc, since SPL was deprecated, for such models, you should use Cube/HAL.
 
-The problem with SPL is all these libraries lack of 'Makefile' support, but you can found some forked repo which contains a 'Makefile'. 
+The problem with SPL or EVT or Demo Suite is all these libraries lack of 'Makefile' support, but you can found some forked repo which contains a 'Makefile'. 
 
 A lot of STM32 clones such as CH32F / GD32F also have this issue, their firmware library or StdPeriph library or EVT packages almost have the same project structure and code organization as STM32 SPL, I provided a demo project for GD32F470ZGT6 (LiangShan Pi board from JLC) to blink four LEDs. You can take is as reference how to write a Makefile for such libraries.
 
