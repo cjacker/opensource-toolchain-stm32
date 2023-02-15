@@ -37,9 +37,10 @@ As any other ARM based MCUs, the toolchain for STM32 consists of:
 
 ## GCC
 
-STM32 and various xx32 use 'arm-none-eabi' GCC toolchain, since they all are based on Cortex-M. it's not neccesary to build the toolchain yourself, there are already a lot of well supported prebuilt release and already widely used by developers. 
+STM32 and various xx32 use 'arm-none-eabi' GCC toolchain, since they are all based on ARM Cortex-M. it's not neccesary to build the toolchain yourself, there are already a lot of well supported prebuilt release and already widely used by developers. 
 
 ### from XPack
+
 [xpack-dev-tools](https://github.com/xpack-dev-tools) provde a prebuilt 'arm-none-eabi' toolchain. you can download it from [here](https://github.com/xpack-dev-tools/arm-none-eabi-gcc-xpack/releases/download/v12.2.1-1.2/xpack-arm-none-eabi-gcc-12.2.1-1.2-linux-x64.tar.gz). 
 
 After download:
@@ -53,9 +54,9 @@ NOTE, the triplet of xpack prebuilt toolchain is 'arm-none-eabi'.
 
 ### from ARM
 
-You can download the prebuilt toolchain for various host from https://developer.arm.com/downloads/-/gnu-rm. 
+You can download the prebuilt toolchain for various host from [arm website](https://developer.arm.com/downloads/-/gnu-rm). 
 
-**Note:** There is prebuilt arm-gcc v12.2 and can be downloaded from https://developer.arm.com/downloads/-/arm-gnu-toolchain-downloads, but the gdb debugger broken due to python issue, do not use the latest 12.2 version until python issue fixed.
+**Note:** There is prebuilt arm-gcc v12.2 and can be downloaded from [here](https://developer.arm.com/downloads/-/arm-gnu-toolchain-downloads), but currently the gdb debugger broken due to python issue, do NOT use the latest 12.2 version until this gdb issue fixed.
 
 Download and extract the toolchain for x86_64 linux:
 
@@ -101,12 +102,12 @@ STM32 has a large, high-quality development ecosystem, there are various opensou
 
 You can always write firmware which directly runs on the hardware without using any underlying software abstraction (So called bare metal programming). For ARM GCC, except the official SPL/STM32Cube libraries, there is [libopencm3](https://github.com/libopencm3/) which support STM32 very well. For Rust, there is [stm32-hal](https://github.com/David-OConnor/stm32-hal) or [stm32-rs](https://github.com/stm32-rs) which support a lot of STM32 models, 
 
-## Bare Metal
+## Bare Metal Programming
 
-For simple tasks such as blink a led, you can write some bare metal codes without depending on any libraries, usually a bare metal project of STM32 consists of: 
+For simple tasks such as blink a led, you can write some bare metal codes without using any libraries, usually a bare metal project of ARM Cortex-M consists of:
 
-- **A Linker script** which define the memory layout
-- **A startup file** in c or asm (typically written in assembly) which:
+- **A Linker script** define the memory layout
+- **A startup file** typically written in assembly which:
   + initialize the stack pointer
   + initialize the non-zero read/write-data in RAM
   + initialize the zero read/write-data in RAM
@@ -114,25 +115,21 @@ For simple tasks such as blink a led, you can write some bare metal codes withou
   + jump to the main function
 - **A main function**
 
-There are some baremetal demos in this repo for STMf1/f4/h7, you can take these demos as reference.
+There are some baremetal demos in this repo for stm32f1/f4/h7 (what I have when written this tutorial), you can take these demos as reference.
 
 ## Official SPL / EVT /DemoSuite
 
-ST STM32 use the name 'SPL', WCH CH32F use the name 'EVT' and GigaDevice GD32F use the name 'Demo Suite'.
+Part vendors will provide a standard peripherals library for each part model or a part family. ST STM32 call it as 'SPL', WCH CH32F call it as 'EVT' and GigaDevice GD32F call it as 'Demo Suite'. They 
+all have the similar project structure and organization, all are very similar to STM32 'SPL'.
 
-**Note:** STM32 official SPLs was deprecated serveral years ago. it's recommend to use Cube/HAL with STM32 instead of SPL.
+**Note:** stm32 'SPL' was deprecated serveral years ago by stm32cube. it's recommend to use Cube/HAL with stm32 instead of 'SPL'.
 
-Standard Peripherals library covers 3 abstraction levels, and includes:
+Usually, the 'SPL' (or EVT or Demo Suite) contains:
+- A complete register address mapping with all bits, bit fields and registers declared in C.
+- A collection of routines and data structures which covers all peripheral functions
+- A set of examples covering all available peripherals with template projects for the most common development toolchains
 
-* A complete register address mapping with all bits, bit fields and registers declared in C. This avoids a cumbersome task and more important, it brings the benefits of a bug free reference mapping file, speeding up the early project phase.
-
-* A collection of routines and data structures which covers all peripheral functions (drivers with common API). It can directly be used as a reference framework, since it also includes macros for supporting core-related intrinsic features and common constants and data types definition.
-
-* A set of examples covering all available peripherals with template projects for the most common development toolchains. With the appropriate hardware evaluation board, this allows to get started with a brand new micro within few hours.
-
-Each driver consists of a set of functions covering all peripheral functionalities. The development of each driver is driven by a common API (application programming interface) which standardizes the driver structure, the functions and the parameter names. The driver source code is developed in ‘Strict ANSI-C’ (relaxed ANSI-C for projects and example files). It is fully documented and is MISRA-C 2004 compliant. Writing the whole library in ‘Strict ANSI-C’ makes it independent from the software toolchain. Only the start-up files depend on the toolchain.
-
-All SPL packages can be downloaded from [here](https://www.st.com/en/embedded-software/stm32-standard-peripheral-libraries.html), you may need register an account and login first before download, available SPLs includes:
+All stm32 'SPL' packages can be downloaded from [here](https://www.st.com/en/embedded-software/stm32-standard-peripheral-libraries.html), you may need register an account and login first before download, Available SPLs includes:
 
 ```
 STSW-STM32048 	STM32F0xx standard peripherals library
@@ -143,13 +140,13 @@ STSW-STM32065 	STM32F4 DSP and standard peripherals library
 STSW-STM32077   STM32L1xx standard peripherals library
 ```
 
-You could notice there is no SPL for such as G4 or H7 etc, since SPL was deprecated, for such models, you should use Cube/HAL.
+You could already notice there is no SPL for such as stm32 G4 or H7, since SPL was deprecated, for such models, you should use Cube/HAL.
 
-The problem with SPL or EVT or Demo Suite is all these libraries lack of 'Makefile' support, but you can found some forked repo which contains a 'Makefile'. 
+The problem of these SPLs is all of them lack 'Makefile' support and maybe also lack gcc supporting, most of them are designed to use with Keil MDK or other commercial IDE. but you may found some forked repo which port to GCC and Makefile.
 
-A lot of STM32 clones such as CH32F / GD32F also have this issue, their firmware library or StdPeriph library or EVT packages almost have the same project structure and code organization as STM32 SPL, I provided a demo project for GD32F470ZGT6 (LiangShan Pi board from JLC) to blink four LEDs. You can take is as reference how to write a Makefile for such libraries.
+A lot of STM32 clones such as CH32F / GD32F also have this issue, I provided a demo project in this repo for GD32F470ZGT6 (LiangShan Pi board from JLC) to blink four LEDs. You can take is as reference how to write a Makefile for such libraries.
 
-As mentioned in bare metal programming section, you may also need to prepare a startup asm file (work with GCC) and a linker script. these files can be taken from libopencm3 or various other opensource projects. For stm32, you can also use stm32cubemx to generate the startup and linker script files, but it will not covered by this tutorial.
+Also I make a '[ch32f evt convertor](https://github.com/cjacker/ch32f_evt_makefile_gcc_project_template)' to help developers convert the official WCH EVT packages to support GCC and Makefile.
 
 Use LiangShan Pi with GD32F470ZGT6 as example, there is a demo project in this repo, the 'GD32F4xx_Firmware_Library' directly comes from GD32 official Demo Suite without any modifications. What I added is a linker script and a startup asm file for gd32f470, the 'led' dir contains blink source codes and a 'Makefile':
 
