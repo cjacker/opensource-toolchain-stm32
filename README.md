@@ -37,7 +37,21 @@ As any other ARM based MCUs, the toolchain for STM32 consists of:
 
 ## GCC
 
-STM32 and various XX32 use the 'arm-none-eabi' GCC toolchain, since they all are based on Cortex-M. it's not neccesary to build the toolchain yourself, there are already a lot of well supported prebuilt release and already widely used by developers. 
+STM32 and various xx32 use 'arm-none-eabi' GCC toolchain, since they all are based on Cortex-M. it's not neccesary to build the toolchain yourself, there are already a lot of well supported prebuilt release and already widely used by developers. 
+
+### from XPack
+[xpack-dev-tools](https://github.com/xpack-dev-tools) provde a prebuilt 'arm-none-eabi' toolchain. you can download it from [here](https://github.com/xpack-dev-tools/arm-none-eabi-gcc-xpack/releases/download/v12.2.1-1.2/xpack-arm-none-eabi-gcc-12.2.1-1.2-linux-x64.tar.gz). 
+
+After download:
+```
+sudo mkdir -p /opt/xpack-arm-none-eabi
+sudo tar xf xpack-arm-none-eabi-gcc-12.2.1-1.2-linux-x64.tar.gz -C /opt/xpack-arm-none-eabi --strip-components=1
+```
+and add /opt/xpack-arm-none-eabi/bin to PATH env.
+
+NOTE, the triplet of xpack prebuilt toolchain is 'arm-none-eabi'.
+
+### from ARM
 
 You can download the prebuilt toolchain for various host from https://developer.arm.com/downloads/-/gnu-rm. 
 
@@ -53,8 +67,6 @@ sudo tar xf gcc-arm-none-eabi-10.3-2021.10-x86_64-linux.tar.bz2 -C /opt
 And add `/opt/gcc-arm-none-eabi-10.3-2021.10/bin` to PATH env of your shell.
 
 **NOTE:** the toolchain's tripplet is 'arm-none-eabi'.
-
-There are also a lot of prebuilt 'arm-none-eabi' toolchains from other vendors, you can use them, the installation process is almost same.
 
 ## Rust
 
