@@ -146,7 +146,9 @@ The problem of these SPLs is all of them lack 'Makefile' support and maybe also 
 
 A lot of STM32 clones such as CH32F / GD32F also have this issue, I provided a demo project in this repo for GD32F470ZGT6 (LiangShan Pi board from JLC) to blink four LEDs. You can take is as reference how to write a Makefile for such libraries.
 
-Also I make a '[ch32f evt convertor](https://github.com/cjacker/ch32f_evt_makefile_gcc_project_template)' to help developers convert the official WCH EVT packages to support GCC and Makefile.
+you may also need a linker script and startup file, the startup file can be converted from the ARM startup file shipped in vendor's package with [startupfile_generator.py](https://raw.githubusercontent.com/cjacker/opensource-toolchain-stm32/main/startupfile_generator.py), this tool is taken from 'platform-gd32'. and there is [Linker script template](https://raw.githubusercontent.com/cjacker/opensource-toolchain-stm32/main/ldscript.template.ld) here, you can modify it according to your MCU.
+
+Also I make a '[ch32f evt convertor](https://github.com/cjacker/ch32f_evt_makefile_gcc_project_template)' to help developers convert the official WCH EVT packages directly to support GCC and Makefile.
 
 Use LiangShan Pi with GD32F470ZGT6 as example, there is a demo project in this repo, the 'GD32F4xx_Firmware_Library' directly comes from GD32 official Demo Suite without any modifications. What I added is a linker script and a startup asm file for gd32f470, the 'led' dir contains blink source codes and a 'Makefile':
 
