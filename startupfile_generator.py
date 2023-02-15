@@ -177,7 +177,7 @@ def autodetect_cpu_type(filename):
         "ch32f2"  : "cortex-m3", 
     }
     for key in filename_to_cpu.keys():
-        print("checking against " + str(key))
+        #print("checking against " + str(key))
         if key in filename:
             return filename_to_cpu[key]
     return "cortex-m4"
@@ -190,8 +190,7 @@ def convert_arm_to_gcc_startup(src_file, output_file):
     transformed_table = transform_to_gcc_isr_table(isr_table)
     # print("".join(transformed_table))
     cpu_type = autodetect_cpu_type(src_file)
-    print(cpu_type)
-    #header = generate_header("cortex-m4")
+    # print(cpu_type)
     header = generate_header(cpu_type)
     # print(header)
     default_handlers = generate_default_handlers(isr_table)
@@ -200,16 +199,16 @@ def convert_arm_to_gcc_startup(src_file, output_file):
     full_startup_file = header + \
         "".join(transformed_table) + \
         get_after_isr_table_text() + default_handlers
-    print("==== FULL STARTUP FILE for %s ====" % src_file)
-    print(full_startup_file)
-    print("=== END OF FULL STARTUP FILE %s === " % output_file)
+    #print("==== FULL STARTUP FILE for %s ====" % src_file)
+    #print(full_startup_file)
+    #print("=== END OF FULL STARTUP FILE %s === " % output_file)
 
     write_file_contents(output_file, full_startup_file)
 
 
 def main():
     src_file = sys.argv[1]
-    out_file = Path(src_file).stem + "_gcc.s"
+    out_file = Path(src_file).stem + ".S"
     convert_arm_to_gcc_startup(src_file, out_file)
     print("Done, wrote startup files to %s." % (out_file))
 
