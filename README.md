@@ -117,10 +117,8 @@ For simple tasks such as blink a led, you can write some bare metal codes withou
 
 There are some baremetal demos in this repo for stm32f1/f4/h7 (what I have when written this tutorial), you can take these demos as reference.
 
-## Official SPL / EVT /Demo Suite
-
-Part vendors will provide a standard peripherals library for each part model or a part family. ST STM32 call it as 'SPL', WCH CH32F call it as 'EVT' and GigaDevice GD32F call it as 'Demo Suite'. They 
-all have the similar project structure and organization, and all are very similar to STM32 'SPL'.
+## Official SPL / EVT / Firmware library
+Part vendors will provide a standard peripherals library for each part model or a part family. ST STM32 call it as 'SPL', WCH CH32F call it as 'EVT' and GigaDevice GD32F call it as 'Firmware library'. They all have the similar project structure and organization, and all are very similar to STM32 'SPL'.
 
 **Note:** stm32 'SPL' was deprecated serveral years ago by stm32cube. it's recommend to use Cube/HAL with stm32 instead of 'SPL'.
 
@@ -148,15 +146,14 @@ A lot of STM32 clones such as CH32F / GD32F also have this issue, I make a '[ch3
 
 If you want to convert other xx32 firmware library, you need write a linker script and a startup asm file for it. The startup file can be converted from the ARM startup file shipped in vendor's package with [startupfile_generator.py](https://raw.githubusercontent.com/cjacker/opensource-toolchain-stm32/main/startupfile_generator.py), this tool is taken and modified from 'platform-gd32'. and there is also a [Linker script template](https://raw.githubusercontent.com/cjacker/opensource-toolchain-stm32/main/ldscript.template.ld) provided, you can modify it according to your MCU.
 
-I also provided a demo project in this repo for GD32F470ZGT6 (LiangShan Pi board from JLC) to blink four LEDs. The 'GD32F4xx_Firmware_Library' directly comes from GD32 official Demo Suite without any modifications. What I added is a linker script and a startup asm file for gd32f470.
+I also convert gd32f4xx firmware library to use with GD32F470ZGT6 (LiangShan Pi dev board from JLC) to blink four LEDs. The codes is from gd32f4xx firmware library v3.0.3 without any changes. What I added is the linker script, startup file and a Makefile for gd32f470zgt6. For more info about gd32f4xx firmware library, please refer to [this repo](https://github.com/cjacker/gd32f4xx_firmware_library_gcc_makefile).
 
 ```
-git clone https://github.com/cjacker/opensource-toolchain-stm32
-cd liangshan_pi_gd32f470zgt6_blink
+git clone https://github.com/cjacker/gd32f4xx_firmware_library_gcc_makefile
 make
 ```
 
-The target elf/hex/bin files 'gd32f470zgt6.xxx' will be generated at `build` dir. 
+The target file 'gd32f470zgt6.elf' will be generated in `build` dir. 
 
 ## STM32 Cube/HAL
 
