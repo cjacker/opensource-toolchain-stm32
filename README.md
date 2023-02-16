@@ -1,4 +1,4 @@
-# Opensource toolchain for stm32
+# Opensource toolchain for ARM Cortex-M (For example, STM32)
 
 STM32 is a family of 32-bit microcontroller integrated circuits by STMicroelectronics. The STM32 chips are grouped into related series that are based around the same 32-bit ARM processor core, such as the Cortex-M33F, Cortex-M7F, Cortex-M4F, Cortex-M3, Cortex-M0+, or Cortex-M0. Internally, each microcontroller consists of the processor core, static RAM, flash memory, debugging interface, and various peripherals.
 
@@ -6,9 +6,36 @@ The STM32 family consists of 17 series of microcontrollers: H7, F7, F4, F3, F2, 
 
 For more information about STM32 family, please refer to https://en.wikipedia.org/wiki/STM32.
 
-There are also a lot of STM32 clones, such as GD32 / CH32 / MM32 etc. Most of them keep compatible with STM32. The toolchain and utilities described in this tutorial may also be used with such parts.
 
-# Hardware prerequisites
+  - [Bare metal programming](https://github.com/cjacker/opensource-toolchain-stm32#bare-metal-programming)There are also a lot of STM32 clones, such as GD32 / CH32 / MM32 etc. Most of them keep compatible with STM32. The toolchain and utilities described in this tutorial may also be used with such parts.
+
+# Table of contents
+  + [Hardware prerequist](https://github.com/cjacker/opensource-toolchain-stm32#hardware-prerequist)
+  + [Toolchain overview](https://github.com/cjacker/opensource-toolchain-stm32#toolchain-overview)
+  + [Compiler](https://github.com/cjacker/opensource-toolchain-stm32#compiler)
+    - [GCC](https://github.com/cjacker/opensource-toolchain-stm32#gcc)
+      + [from XPack](https://github.com/cjacker/opensource-toolchain-stm32#from-xpack)
+      + [from ARM](https://github.com/cjacker/opensource-toolchain-stm32#from-arm)
+    - [Rust](https://github.com/cjacker/opensource-toolchain-stm32#rust)
+  + [SDKs](https://github.com/cjacker/opensource-toolchain-stm32#sdks)
+    - [Bare metal programming](https://github.com/cjacker/opensource-toolchain-stm32#bare-metal-programming)
+    - [Official SPL/EVT/Firmware library](https://github.com/cjacker/opensource-toolchain-stm32#official-spl--evt--firmware-library)
+    - [STM32 Cube/HAL](https://github.com/cjacker/opensource-toolchain-stm32#stm32-cubehal)
+    - [libopencm3](https://github.com/cjacker/opensource-toolchain-stm32#libopencm3)
+    - [Rust stm32-hal](https://github.com/cjacker/opensource-toolchain-stm32#stm32-hal)
+    - [Rust stm32-rs](https://github.com/cjacker/opensource-toolchain-stm32#stm32-rs)
+  + [Programming](https://github.com/cjacker/opensource-toolchain-stm32#programming)
+    - [ISP](https://github.com/cjacker/opensource-toolchain-stm32#isp)
+      + [to activate ISP mode](https://github.com/cjacker/opensource-toolchain-stm32#to-activate-isp-mode)
+      + [ISP programming](https://github.com/cjacker/opensource-toolchain-stm32#isp-programming)
+        - [UART](https://github.com/cjacker/opensource-toolchain-stm32#uart-isp)
+        - [USB-DFU](https://github.com/cjacker/opensource-toolchain-stm32#usb-dfu)
+    - [ST-Link](https://github.com/cjacker/opensource-toolchain-stm32#st-link)
+    - [DAPLink](https://github.com/cjacker/opensource-toolchain-stm32#daplink)
+    - [JLink](https://github.com/cjacker/opensource-toolchain-stm32#jlink)
+  + [Debugging](https://github.com/cjacker/opensource-toolchain-stm32#debugging)
+
+# Hardware prerequist
 
 * A development board with STM32 MCU. In this tutorial, I will use STM32F1/F4/H7 and GD32, CH32. 
 * ST-LINK / DAPLink for programming and debugging.
