@@ -158,6 +158,7 @@ def autodetect_cpu_type(filename):
     # unique identifiers by which we can see to which CPU type this file belongs.
     filename_to_cpu = {
         "gd32e10x": "cortex-m3",  # GD32E10x_Firmware_Library_V1.2.1
+        "gd32e11x": "cortex-m3",  # GD32E11x_Firmware_Library_V1.0.1
         "gd32e23x": "cortex-m23",  # GD32E23x_Firmware_Library_V1.1.1
         "gd32l23x": "cortex-m23",  # GD32L23x_Firmware_Library_V1.0.0
         "gd32f1x0": "cortex-m3",  # GD32F1x0_Firmware_Library_V3.3.2
@@ -165,7 +166,8 @@ def autodetect_cpu_type(filename):
         # covers gd32f{405,407, 450} from GD32F4xx_Firmware_Library_V2.1.3
         "gd32f4": "cortex-m4",
                                   # and gd32f403 from GD32F403_Firmware_Library_V2.1.2,
-        "gd32c10x": "cortex-m4",
+        "gd32c10x": "cortex-m4",  # GD32C10x_Firmware_Library_V1.1.1
+        "gd32c11x": "cortex-m4",  # GD32C11x_Firmware_Library_V1.0.1
         "gd32f10x": "cortex-m3",  # GD32F10x_Firmware_Library_V2.2.1
         "gd32f20x": "cortex-m3",  # GD32F20x_Firmware_Library_V2.2.1
         "gd32f30x": "cortex-m4",  # GD32F30x_Firmware_Library_V2.1.2
