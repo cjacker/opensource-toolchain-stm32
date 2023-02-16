@@ -6,8 +6,7 @@ The STM32 family consists of 17 series of microcontrollers: H7, F7, F4, F3, F2, 
 
 For more information about STM32 family, please refer to https://en.wikipedia.org/wiki/STM32.
 
-
-  - [Bare metal programming](https://github.com/cjacker/opensource-toolchain-stm32#bare-metal-programming)There are also a lot of STM32 clones, such as GD32 / CH32 / MM32 etc. Most of them keep compatible with STM32. The toolchain and utilities described in this tutorial may also be used with such parts.
+There are also a lot of STM32 clones, such as GD32 / CH32 / MM32 etc. Most of them keep compatible with STM32. The toolchains and utilities described in this tutorial could also be used with such parts from different vendors.
 
 # Table of contents
   + [Hardware prerequist](https://github.com/cjacker/opensource-toolchain-stm32#hardware-prerequist)
@@ -652,7 +651,7 @@ openocd -f /usr/share/openocd/scripts/interface/cmsis-dap.cfg -f /usr/share/open
 
 Segger J-Link support ARMs Serial Wire Debug (SWD), but the utilities is all close sourced, and it's too expensive, not worth to buy for beginners. how to use it will not covered by this tutorial.
 
-Since I had a JLink, what I had to mentioned here for beginners is: 'do not forget to connect the VTRef pin to target device'.
+Since I had a JLink, what I had to mentioned here for beginners is: 'do not forget to connect the VTRef pin to target device', otherwise J-Link can not detect the target device.
 
 
 # Debugging
@@ -712,7 +711,7 @@ Anyway, you can take below examples/demo codes as reference:
 
 - [libopencm3-miniblink](https://github.com/libopencm3/libopencm3-miniblink) for libopencm3
 - [stm32-hal-quickstart](https://github.com/David-OConnor/stm32-hal-quickstart) for rust stm32-hal.
-- [every stm32-rs hal library](https://github.com/stm32-rs) for rust stm32-rs.
+- [various stm32-rs hal library](https://github.com/stm32-rs) for rust stm32-rs.
 - [ch32f103evt](https://github.com/cjacker/ch32f103evt_gcc_makefile/) for CH32F103.
 - [ch32f20xevt](https://github.com/cjacker/ch32f20xevt_gcc_makefile) for CH32F20x
-- [gd32f5xx firmware library](https://github.com/cjacker/gd32f4xx_firmware_library_gcc_makefile) for GD32F4xx and LiangShan Pi from JLC.
+- [gd32f4xx firmware library](https://github.com/cjacker/gd32f4xx_firmware_library_gcc_makefile) for GD32F4xx and LiangShan Pi from JLC.
