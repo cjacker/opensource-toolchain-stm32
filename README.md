@@ -34,7 +34,8 @@ For more information about STM32 family, please refer to https://en.wikipedia.or
     - [DAPLink](https://github.com/cjacker/opensource-toolchain-stm32#daplink)
     - [JLink](https://github.com/cjacker/opensource-toolchain-stm32#jlink)
   + [Debugging](https://github.com/cjacker/opensource-toolchain-stm32#debugging)
-
+  + [Project templates](https://github.com/cjacker/opensource-toolchain-stm32/edit/main/README.md#project-templates)
+  
 # Hardware prerequist
 
 * A development board with STM32 MCU. In this tutorial, I will use STM32F1/F4/H7 and GD32, CH32. 
@@ -703,3 +704,15 @@ Breakpoint 1, main () at main.c:26
 26          RCC_AHB1ENR |= 0x00000006;
 
 ```
+
+# Project templates
+Since there are a lot of different SDKs for STM32 and XX32, unified project templates is not exist, it depends on which programming language and library you use. 
+
+Anyway, you can take below examples/demo codes as reference:
+
+- [libopencm3-miniblink](https://github.com/libopencm3/libopencm3-miniblink) for libopencm3
+- [stm32-hal-quickstart](https://github.com/David-OConnor/stm32-hal-quickstart) for rust stm32-hal.
+- [every stm32-rs hal library](https://github.com/stm32-rs) for rust stm32-rs.
+- [ch32f103evt](https://github.com/cjacker/ch32f103evt_gcc_makefile/) for CH32F103.
+- [ch32f20xevt](https://github.com/cjacker/ch32f20xevt_gcc_makefile) for CH32F20x
+- [gd32f5xx firmware library](https://github.com/cjacker/gd32f4xx_firmware_library_gcc_makefile) for GD32F4xx and LiangShan Pi from JLC.
