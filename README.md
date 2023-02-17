@@ -33,7 +33,7 @@ There are also a lot of STM32 clones, such as GD32 / CH32 / MM32 etc. Most of th
     - [DAPLink](https://github.com/cjacker/opensource-toolchain-stm32#daplink)
     - [JLink](https://github.com/cjacker/opensource-toolchain-stm32#jlink)
   + [Debugging](https://github.com/cjacker/opensource-toolchain-stm32#debugging)
-  + [Project templates](https://github.com/cjacker/opensource-toolchain-stm32/edit/main/README.md#project-templates)
+  + [Project templates](https://github.com/cjacker/opensource-toolchain-stm32#project-templates)
   
 # Hardware prerequist
 
