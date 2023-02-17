@@ -18,7 +18,7 @@ There are also a lot of STM32 clones, such as GD32 / CH32 / MM32 etc. Most of th
     - [Rust](https://github.com/cjacker/opensource-toolchain-stm32#rust)
   + [SDKs](https://github.com/cjacker/opensource-toolchain-stm32#sdks)
     - [Bare metal programming](https://github.com/cjacker/opensource-toolchain-stm32#bare-metal-programming)
-    - [Official SPL/EVT/Firmware library](https://github.com/cjacker/opensource-toolchain-stm32#official-spl--evt--firmware-library)
+    - [Official Firmware library](https://github.com/cjacker/opensource-toolchain-stm32#official-firmware-library)
     - [STM32 Cube/HAL](https://github.com/cjacker/opensource-toolchain-stm32#stm32-cubehal)
     - [libopencm3](https://github.com/cjacker/opensource-toolchain-stm32#libopencm3)
     - [Rust stm32-hal](https://github.com/cjacker/opensource-toolchain-stm32#stm32-hal)
@@ -144,12 +144,13 @@ For simple tasks such as blink a led, you can write some bare metal codes withou
 
 There are some baremetal demos in this repo for stm32f1/f4/h7 (what I have when written this tutorial), you can take these demos as reference.
 
-## Official SPL / EVT / Firmware library
-Part vendors will provide a standard peripherals library for each part model or a part family. ST STM32 call it as 'SPL', WCH CH32F call it as 'EVT' and GigaDevice GD32F call it as 'Firmware library'. They all have the similar project structure and organization, and all are very similar to STM32 'SPL'.
+## Official Firmware library
+
+Vendors will provide a firmware library for each part or for a part family. ST STM32 call it as 'SPL' (standard peripherals library), WCH CH32F ship it as 'EVT' and GigaDevice GD32F call it as 'firmware library'. They all have the similar project structure and file organization, and all are very similar to STM32 'SPL'.
 
 **Note:** stm32 'SPL' was deprecated serveral years ago by stm32cube. it's recommend to use Cube/HAL with stm32 instead of 'SPL'.
 
-Usually, the 'SPL' (or EVT or Demo Suite) contains:
+Usually, a firmware library contains:
 - A complete register address mapping with all bits, bit fields and registers declared in C.
 - A collection of routines and data structures which covers all peripheral functions
 - A set of examples covering all available peripherals with template projects for the most common development toolchains
@@ -165,15 +166,21 @@ STSW-STM32065 	STM32F4 DSP and standard peripherals library
 STSW-STM32077   STM32L1xx standard peripherals library
 ```
 
-You could already notice there is no SPL for such as stm32 G4 or H7, since SPL was deprecated, for such models, you should use Cube/HAL.
+You could already notice there is no SPL for such as stm32 G4 or H7, since SPL was deprecated, you should use Cube/HAL for such models.
 
-The problem of these SPLs is all of them lack 'Makefile' support and maybe also lack gcc support, most of them are designed to use with Keil MDK or other commercial IDE. but you may found some forked repo which port to GCC and Makefile.
+The problem of these SPLs is all of them lack 'Makefile' support and maybe also lack gcc support, most of them are designed for Keil MDK or other commercial IDE. but you may found some forked repo which port to GCC and have a Makefile.
 
-A lot of STM32 clones such as CH32F / GD32F also have this issue, I make a '[ch32f evt convertor](https://github.com/cjacker/ch32f_evt_makefile_gcc_project_template)' to help developers convert the WCH official EVT packages, make it support GCC and Makefile. And the pre-converted [CH32F103EVT](https://github.com/cjacker/ch32f103evt_gcc_makefile) and [CH32F20xEVT](https://github.com/cjacker/ch32f20xevt_gcc_makefile) already upload to github. you can use these pre-converted libraries or convert it by yourself.
+A lot of STM32 clones such as CH32F / GD32F also have this issue, I make '[ch32f evt convertor](https://github.com/cjacker/ch32f_evt_makefile_gcc_project_template)' and '[gd32 fwlib convertor](https://github.com/cjacker/gd32_fwlib_convertor)' to help developers convert CH32F and GD32F official firmware library package, make it support GCC and Makefile. All firmware library from CH32 and GD32 had been tested, and here are some pre-converted firmware libraries:
 
-If you want to convert other xx32 firmware library, you need write a linker script and a startup asm file for it. The startup file can be converted from the ARM startup file shipped in vendor's package with [startupfile_generator.py](https://raw.githubusercontent.com/cjacker/opensource-toolchain-stm32/main/startupfile_generator.py), this tool is taken and modified from 'platform-gd32'. and there is also a [Linker script template](https://raw.githubusercontent.com/cjacker/opensource-toolchain-stm32/main/ldscript.template.ld) provided, you can modify it according to your MCU.
+- [CH32F103EVT](https://github.com/cjacker/ch32f103evt_gcc_makefile)
+- [CH32F20xEVT](https://github.com/cjacker/ch32f20xevt_gcc_makefile)
+- [GD32F10x firmware library](https://github.com/cjacker/gd32f10x_firmware_library_gcc_makefile)
+- [GD32F30x firmware library](https://github.com/cjacker/gd32f30x_firmware_library_gcc_makefile)
+- [GD32F4xx firmware library](https://github.com/cjacker/gd32f4xx_firmware_library_gcc_makefile)
 
-I also convert gd32f4xx firmware library to use with GD32F470ZGT6 (LiangShan Pi dev board from JLC) to blink four LEDs. The codes is from gd32f4xx firmware library v3.0.3 without any changes. What I added is the linker script, startup file and a Makefile for gd32f470zgt6. For more info about gd32f4xx firmware library, please refer to [this repo](https://github.com/cjacker/gd32f4xx_firmware_library_gcc_makefile).
+If you want to convert other xx32 firmware library, you need write a linker script and a startup asm file for it. The startup file can be converted from 'ARM' startup file shipped in vendor's package with [startupfile_generator.py](https://raw.githubusercontent.com/cjacker/opensource-toolchain-stm32/main/startupfile_generator.py), this tool is taken and modified from 'platform-gd32'. and there is also a [Linker script template](https://raw.githubusercontent.com/cjacker/opensource-toolchain-stm32/main/ldscript.template.ld) provided, you can modify it according to your MCU, the most important job is to set FLASH SIZE and RAM SIZE.
+
+Use [GD32F4xx firmware library](https://github.com/cjacker/gd32f4xx_firmware_library_gcc_makefile) as example, the default part set to gd32f470zgt6 and the default 'User' codes is to blink four LEDs on LiangShan Pi dev board from JLC.
 
 ```
 git clone https://github.com/cjacker/gd32f4xx_firmware_library_gcc_makefile
