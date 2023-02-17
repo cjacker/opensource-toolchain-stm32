@@ -721,6 +721,6 @@ Anyway, you can take below examples/demo codes as reference:
 - [various stm32-rs hal library](https://github.com/stm32-rs) for rust stm32-rs.
 - [ch32f103evt](https://github.com/cjacker/ch32f103evt_gcc_makefile/) for CH32F103.
 - [ch32f20xevt](https://github.com/cjacker/ch32f20xevt_gcc_makefile) for CH32F20x
-- [gd32f10x firmware library](https://github.com/cjacker/gd32f10x_firmware_library_gcc_makefile) for GD32F10x and WeAct GD32 Bluepill
-- [gd32f30x firmware library](https://github.com/cjacker/gd32f30x_firmware_library_gcc_makefile) for GD32F30x and WeAct GD32 Bluepill Plus.
+- [gd32f10x firmware library](https://github.com/cjacker/gd32f10x_firmware_library_gcc_makefile) for GD32F10x and [WeAct GD32 Bluepill Plus](https://github.com/WeActStudio/WeActStudio.BluePill-Plus-GD32).
+- [gd32f30x firmware library](https://github.com/cjacker/gd32f30x_firmware_library_gcc_makefile) for GD32F30x and [WeAct GD32 Bluepill Plus](https://github.com/WeActStudio/BluePill-Plus).
 - [gd32f4xx firmware library](https://github.com/cjacker/gd32f4xx_firmware_library_gcc_makefile) for GD32F4xx and LiangShan Pi from JLC.
