@@ -646,6 +646,12 @@ openocd -f /usr/share/openocd/scripts/interface/stlink.cfg -f /usr/share/openocd
 
 If you use 'app.bin' in OpenOcd command, the start addr must be append, it should be 'program app.bin 0x8000000'.
 
+### For AT32F
+
+AT32F flash driver is not supported by upstream OpenOCD, you need either build ArteryTek forked OpenOCD or use the patch provided in this repo:
+- Patch for OpenOCD 0.12 and above: 
+- ArteryTek Forked OpenOcd : https://github.com/ArteryTek/openocd
+
 ## DAPLink
 
 DAPLink provides a standardized way to access the Coresight Debug Access Port (DAP) of an ARM Cortex microcontroller via USB. Usually it supports both SWD and serial ports. the connection method is as same as ST-Link.
@@ -662,6 +668,10 @@ Still use stm32f411 as target, build the 'baremetal-stm32f4' demo in this repo a
 ```
 openocd -f /usr/share/openocd/scripts/interface/cmsis-dap.cfg -f /usr/share/openocd/scripts/target/stm32f4x.cfg -c "program app.elf verify reset exit"
 ```
+### For AT32F
+AT32F flash driver is not supported by upstream OpenOCD, you need either build ArteryTek forked OpenOCD or use the patch provided in this repo:
+- Patch for OpenOCD 0.12 and above: 
+- ArteryTek Forked OpenOcd : https://github.com/ArteryTek/openocd
 
 ## JLink
 
@@ -733,3 +743,4 @@ Anyway, you can take below examples/demo codes as reference:
 - [gd32f10x firmware library](https://github.com/cjacker/gd32f10x_firmware_library_gcc_makefile) for GD32F10x and [WeAct GD32 Bluepill Plus](https://github.com/WeActStudio/WeActStudio.BluePill-Plus-GD32).
 - [gd32f30x firmware library](https://github.com/cjacker/gd32f30x_firmware_library_gcc_makefile) for GD32F30x and [WeAct GD32 Bluepill Plus](https://github.com/WeActStudio/BluePill-Plus).
 - [gd32f4xx firmware library](https://github.com/cjacker/gd32f4xx_firmware_library_gcc_makefile) for GD32F4xx and LiangShan Pi from JLC.
+- [at32f403acgu7 firmware library](https://github.com/cjacker/AT32F403A_407_Firmware_Library_gcc_makefile) for at32f403a / 407 and [WeAct BlackPill Board](https://github.com/WeActStudio/WeActStudio.BlackPill)
