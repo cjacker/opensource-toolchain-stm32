@@ -30,6 +30,7 @@ There are also a lot of STM32 clones, such as GD32 / CH32 / AT32 / MM32 etc. Mos
         - [UART](https://github.com/cjacker/opensource-toolchain-stm32#uart-isp)
         - [USB-DFU](https://github.com/cjacker/opensource-toolchain-stm32#usb-dfu)
     - [ST-Link](https://github.com/cjacker/opensource-toolchain-stm32#st-link)
+      + [Patch OpenOCD for AT32F](https://github.com/cjacker/opensource-toolchain-stm32#patch-openocd-for-at32f)
     - [DAPLink](https://github.com/cjacker/opensource-toolchain-stm32#daplink)
     - [JLink](https://github.com/cjacker/opensource-toolchain-stm32#jlink)
   + [Debugging](https://github.com/cjacker/opensource-toolchain-stm32#debugging)
@@ -646,10 +647,10 @@ openocd -f /usr/share/openocd/scripts/interface/stlink.cfg -f /usr/share/openocd
 
 If you use 'app.bin' in OpenOcd command, the start addr must be append, it should be 'program app.bin 0x8000000'.
 
-### For AT32F
+### Patch OpenOCD for AT32F
 
 AT32F flash driver is not supported by upstream OpenOCD, you need either build ArteryTek forked OpenOCD or use the patch provided in this repo:
-- Patch for OpenOCD 0.12 and above: 
+- Patch for OpenOCD 0.12 and above: [openocd-0.12.0-add-arterytek-driver.patch](https://raw.githubusercontent.com/cjacker/opensource-toolchain-stm32/main/openocd-0.12.0-add-arterytek-driver.patch)
 - ArteryTek Forked OpenOcd : https://github.com/ArteryTek/openocd
 
 ## DAPLink
@@ -668,10 +669,8 @@ Still use stm32f411 as target, build the 'baremetal-stm32f4' demo in this repo a
 ```
 openocd -f /usr/share/openocd/scripts/interface/cmsis-dap.cfg -f /usr/share/openocd/scripts/target/stm32f4x.cfg -c "program app.elf verify reset exit"
 ```
-### For AT32F
-AT32F flash driver is not supported by upstream OpenOCD, you need either build ArteryTek forked OpenOCD or use the patch provided in this repo:
-- Patch for OpenOCD 0.12 and above: 
-- ArteryTek Forked OpenOcd : https://github.com/ArteryTek/openocd
+
+**For AT32F series**, you need to patch OpenOCD to support at32f flash drivers, also various some at32f target configs, please refer to the section '[Patch OpenOCD for AT32F](https://github.com/cjacker/opensource-toolchain-stm32#patch-openocd-for-at32f)'.
 
 ## JLink
 
