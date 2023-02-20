@@ -43,6 +43,7 @@ There are also a lot of STM32 clones, such as GD32 / CH32 / AT32 / MM32 etc. Mos
   - GD32F1 / F3
   - CH32F1 
   - AT32F403A
+  - APM32F1
   
 * ST-LINK / DAPLink for programming and debugging.
   - DAPLink is a cheap, opensource and standard way to program/debug any Cortex-M MCU.
@@ -742,4 +743,5 @@ Anyway, you can take below examples/demo codes as reference:
 - [gd32f10x firmware library](https://github.com/cjacker/gd32f10x_firmware_library_gcc_makefile) for GD32F10x and [WeAct GD32 Bluepill Plus](https://github.com/WeActStudio/WeActStudio.BluePill-Plus-GD32).
 - [gd32f30x firmware library](https://github.com/cjacker/gd32f30x_firmware_library_gcc_makefile) for GD32F30x and [WeAct GD32 Bluepill Plus](https://github.com/WeActStudio/BluePill-Plus).
 - [gd32f4xx firmware library](https://github.com/cjacker/gd32f4xx_firmware_library_gcc_makefile) for GD32F4xx and LiangShan Pi from JLC.
-- [at32f403acgu7 firmware library](https://github.com/cjacker/AT32F403A_407_Firmware_Library_gcc_makefile) for at32f403a / 407 and [WeAct BlackPill Board](https://github.com/WeActStudio/WeActStudio.BlackPill)
+- [at32f403a_407 firmware library](https://github.com/cjacker/AT32F403A_407_Firmware_Library_gcc_makefile) for at32f403a / 407 and [WeAct BlackPill Board](https://github.com/WeActStudio/WeActStudio.BlackPill)
+- [apm32f10x firmware library](https://github.com/cjacker/apm32f10x_firmware_library_gcc_makefile) for apm32f103cbt6 and [WeAct BluePill Board](https://github.com/WeActStudio/WeActStudio.BluePill-Plus-APM32)
