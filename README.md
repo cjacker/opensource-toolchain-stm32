@@ -6,7 +6,7 @@ The STM32 family consists of 17 series of microcontrollers: H7, F7, F4, F3, F2, 
 
 For more information about STM32 family, please refer to https://en.wikipedia.org/wiki/STM32.
 
-There are also a lot of STM32 clones, such as GD32 / CH32 / MM32 etc. Most of them keep compatible with STM32. The toolchains and utilities described in this tutorial could also be used with such parts from different vendors.
+There are also a lot of STM32 clones, such as GD32 / CH32 / AT32 / MM32 etc. Most of them keep compatible with STM32. The toolchains and utilities described in this tutorial could also be used with such parts from different vendors.
 
 # Table of contents
   + [Hardware prerequist](https://github.com/cjacker/opensource-toolchain-stm32#hardware-prerequist)
@@ -37,7 +37,12 @@ There are also a lot of STM32 clones, such as GD32 / CH32 / MM32 etc. Most of th
   
 # Hardware prerequist
 
-* A development board with STM32 MCU. In this tutorial, I will use STM32F1/F4/H7 and GD32, CH32. 
+* A development board with STM32 MCU. In this tutorial, I use :
+  - STM32F1 / F4 / H7
+  - GD32F1 / F3
+  - CH32F1 
+  - AT32F403A
+  
 * ST-LINK / DAPLink for programming and debugging.
   - DAPLink is a cheap, opensource and standard way to program/debug any Cortex-M MCU.
   - If you need work with STM8, buy a ST-Link. If not, buy a DAPLink.
@@ -170,7 +175,9 @@ You could already notice there is no SPL for such as stm32 G4 or H7, since SPL w
 
 The problem of these SPLs is all of them lack 'Makefile' support and maybe also lack gcc support, most of them are designed for Keil MDK or other commercial IDE. but you may found some forked repo which port to GCC and have a Makefile.
 
-A lot of STM32 clones such as CH32F / GD32F also have this issue, I make '[ch32f evt convertor](https://github.com/cjacker/ch32f_evt_makefile_gcc_project_template)' and '[gd32 fwlib convertor](https://github.com/cjacker/gd32_fwlib_convertor)' to help developers convert CH32F and GD32F official firmware library package, make it support GCC and Makefile. All firmware library from CH32 and GD32 had been tested, and here are some pre-converted firmware libraries:
+A lot of firmware libraries of STM32 clones (such as CH32F / GD32F / AT32, etc) also have this issue : lack of Makefile support, even gcc support. Their firmware libraries usually can be downloaded from their official website, For AT32F, ArteryTek officially maintain all its' firmware libraries at : https://github.com/ArteryTek, you can clone them if you work with AT32F.
+
+I make '[ch32f evt convertor](https://github.com/cjacker/ch32f_evt_makefile_gcc_project_template)' and '[gd32 fwlib convertor](https://github.com/cjacker/gd32_fwlib_convertor)' to help developers convert CH32F and GD32F official firmware library package, make it support GCC and Makefile. All firmware library from CH32 and GD32 had been tested, and here are some pre-converted firmware libraries:
 
 - [CH32F103EVT](https://github.com/cjacker/ch32f103evt_gcc_makefile)
 - [CH32F20xEVT](https://github.com/cjacker/ch32f20xevt_gcc_makefile)
@@ -178,7 +185,9 @@ A lot of STM32 clones such as CH32F / GD32F also have this issue, I make '[ch32f
 - [GD32F30x firmware library](https://github.com/cjacker/gd32f30x_firmware_library_gcc_makefile)
 - [GD32F4xx firmware library](https://github.com/cjacker/gd32f4xx_firmware_library_gcc_makefile)
 
-If you want to convert other xx32 firmware library, you need write a linker script and a startup asm file for it. The startup file can be converted from 'ARM' startup file shipped in vendor's package with [startupfile_generator.py](https://raw.githubusercontent.com/cjacker/opensource-toolchain-stm32/main/startupfile_generator.py), this tool is taken and modified from 'platform-gd32'. and there is also a [Linker script template](https://raw.githubusercontent.com/cjacker/opensource-toolchain-stm32/main/ldscript.template.ld) provided, you can modify it according to your MCU, the most important job is to set FLASH SIZE and RAM SIZE.
+For more CH32F and GD32F firmware libraries, you can use the convert tools to convert it your self.
+
+If you want to convert other xx32 firmware library, you may need write a linker script and a startup asm file for it. The startup file can be converted from 'ARM' startup file shipped in vendor's package with [startupfile_generator.py](https://raw.githubusercontent.com/cjacker/opensource-toolchain-stm32/main/startupfile_generator.py), this tool is taken and modified from 'platform-gd32'. and there is also a [Linker script template](https://raw.githubusercontent.com/cjacker/opensource-toolchain-stm32/main/ldscript.template.ld) provided, you can modify it according to your MCU, the most important job is to set FLASH SIZE and RAM SIZE.
 
 Use [GD32F4xx firmware library](https://github.com/cjacker/gd32f4xx_firmware_library_gcc_makefile) as example, the default part set to gd32f470zgt6 and the default 'User' codes is to blink four LEDs on LiangShan Pi dev board from JLC.
 
