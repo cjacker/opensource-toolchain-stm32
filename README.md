@@ -30,9 +30,9 @@ There are also a lot of STM32 clones, such as GD32 / CH32 / AT32 / MM32 etc. Mos
         - [UART](https://github.com/cjacker/opensource-toolchain-stm32#uart-isp)
         - [USB-DFU](https://github.com/cjacker/opensource-toolchain-stm32#usb-dfu)
     - [ST-Link](https://github.com/cjacker/opensource-toolchain-stm32#st-link)
-      + [Patch OpenOCD for AT32F](https://github.com/cjacker/opensource-toolchain-stm32#patch-openocd-for-at32f)
-      + [Patch OpenOCD for HC32L110](https://github.com/cjacker/opensource-toolchain-stm32#patch-openocd-for-hc32l110)
     - [DAPLink](https://github.com/cjacker/opensource-toolchain-stm32#daplink)
+      + [OpenOCD](https://github.com/cjacker/opensource-toolchain-stm32/blob/main/README.md#openocd)
+      + [pyOCD](https://github.com/cjacker/opensource-toolchain-stm32/blob/main/README.md#pyocd)
     - [JLink](https://github.com/cjacker/opensource-toolchain-stm32#jlink)
   + [Debugging](https://github.com/cjacker/opensource-toolchain-stm32#debugging)
   + [Project templates](https://github.com/cjacker/opensource-toolchain-stm32#project-templates)
@@ -665,6 +665,7 @@ GND   -> GND
 ### OpenOCD
 
 **OpenOCD installation:**
+
 For this tutorial, since AT32F and HC32L110 flash driver is not support by upstream OpenOCD, We will build a patched OpenOCD:
 - AT32F patch is from https://github.com/ArteryTek/openocd
 - HC32L110 patch is from https://github.com/Spritetm/openocd-hc32l110/
@@ -747,6 +748,7 @@ openocd -f /usr/share/openocd/scripts/interface/cmsis-dap.cfg -f /usr/share/open
 ### pyOCD 
 
 **pyOCD installation:**
+
 pyOCD installation is rather simple the OpenOCD:
 
 ```
@@ -757,6 +759,7 @@ After pyocd installed, please add `$HOME/.local/bin` to PATH env to find `pyocd`
 
 
 **pyOCD usage:**
+
 After pyOCD installed, you will have the 'pyocd' and 'pyocd-gdbserver' command in your PATH.
 
 To list target pyOCD can support:
@@ -799,11 +802,16 @@ Segger J-Link support ARMs Serial Wire Debug (SWD), but its utilities is all clo
 
 # Debugging
 
-Build the codes with debug infomation and connect the ST-Link or DAPLink as mentioned above, launch OpenOCD as:
+Build the codes to enable debug infomation and connect the ST-Link or DAPLink as mentioned above.
+
+## OpenOCD
+Launch OpenOCD as:
 ```
 openocd -f /usr/share/openocd/scripts/interface/cmsis-dap.cfg -f /usr/share/openocd/scripts/target/stm32f4x.cfg
 ```
-If you use ST-Link, change 'cmsis-dap.cfg' to 'st-link.cfg'.
+
+If you use ST-Link, change 'cmsis-dap.cfg' to 'st-link.cfg', Or
+
 
 The output looks like:
 ```
@@ -824,6 +832,36 @@ Info : Listening on port 3333 for gdb connections
 Info : accepting 'gdb' connection on tcp/3333
 ```
 
+## pyOCD
+
+Launch pyOCD as:
+```
+pyocd gdbserver -t <target> --config pyocd.xml
+```
+
+The output looks like:
+```
+0000454 W Board ID lckf is not recognized [mbed_board]
+0000460 I Target type is hc32l110 [board]
+0000501 I DP IDR = 0x2ba01477 (v1 rev2) [dap]
+0000513 I AHB-AP#0 IDR = 0x24770011 (AHB-AP var1 rev2) [ap]
+0000530 I AHB-AP#0 Class 0x1 ROM table #0 @ 0xe00ff000 (designer=751 part=c9e) [rom_table]
+0000535 I [0]<e000e000:SCS v7-M class=14 designer=43b:Arm part=00c> [rom_table]
+0000538 I [1]<e0001000:DWT v7-M class=14 designer=43b:Arm part=002> [rom_table]
+0000541 I [2]<e0002000:FPB v7-M class=14 designer=43b:Arm part=003> [rom_table]
+0000544 I [3]<e0000000:ITM v7-M class=14 designer=43b:Arm part=001> [rom_table]
+0000549 I [4]<e0040000:TPIU M4 class=9 designer=43b:Arm part=9a1 devtype=11 archid=0000 devid=ca1:0:0> [rom_table]
+0000553 W Invalid coresight component, cidr=0x0 [rom_table]
+0000554 I [5]e0041000: cidr=0, pidr=0, component invalid> [rom_table]
+0000558 I CPU core #0 is Cortex-M4 r0p1 [cortex_m]
+0000565 I FPU present: FPv4-SP-D16-M [cortex_m]
+0000574 I 4 hardware watchpoints [dwt]
+0000578 I 6 hardware breakpoints, 4 literal comparators [fpb]
+0000605 I Semihost server started on port 4444 (core 0) [server]
+0000646 I GDB server started on port 3333 (core 0) [gdbserver]
+```
+
+## debugging with gdb
 Start another terminal window, run:
 
 ```
@@ -862,3 +900,4 @@ Anyway, you can take below examples/demo codes as reference:
 - [gd32f4xx firmware library](https://github.com/cjacker/gd32f4xx_firmware_library_gcc_makefile) for GD32F4xx and LiangShan Pi from JLC.
 - [at32f403a_407 firmware library](https://github.com/cjacker/AT32F403A_407_Firmware_Library_gcc_makefile) for at32f403a / 407 and [WeAct BlackPill Board](https://github.com/WeActStudio/WeActStudio.BlackPill)
 - [apm32f10x firmware library](https://github.com/cjacker/apm32f10x_firmware_library_gcc_makefile) for apm32f103cbt6 and [WeAct BluePill Board](https://github.com/WeActStudio/WeActStudio.BluePill-Plus-APM32)
+- [hc32l110 firmware library](https://github.com/cjacker/hc32l110_firmware_library_gcc_makefile) for HuaDa Semiconductor HC32L110 series.
