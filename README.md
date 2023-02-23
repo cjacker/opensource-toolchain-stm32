@@ -800,8 +800,8 @@ pyocd load <target hex file>.hex -t <target> --config pyocd.yaml
 ```
 
 ## JLink
+Since all JLink utilities is close sourced, the usage of JLink will not covered by this tutorial.
 
-Segger J-Link support ARMs Serial Wire Debug (SWD), but its utilities is all close sourced, and the device is too expensive, not worth to buy for beginners. the usage of jlink will not covered by this tutorial.
 
 # Debugging
 
