@@ -642,7 +642,7 @@ Then build the 'baremetal-stm32f4' demo in this repo and program it:
 st-flash write app.bin 0x8000000
 ```
 
-You can also use OpenOCD with ST-LINK:
+You can also use OpenOCD / pyOCD with ST-LINK:
 
 ```
 openocd -f /usr/share/openocd/scripts/interface/stlink.cfg -f /usr/share/openocd/scripts/target/stm32f4x.cfg -c "program app.elf verify reset exit"
@@ -662,8 +662,9 @@ SWDIO -> SWDIO
 GND   -> GND
 ```
 
-### Installation of OpenOCD
+### OpenOCD
 
+**OpenOCD installation:**
 For this tutorial, since AT32F and HC32L110 flash driver is not support by upstream OpenOCD, We will build a patched OpenOCD:
 - AT32F patch is from https://github.com/ArteryTek/openocd
 - HC32L110 patch is from https://github.com/Spritetm/openocd-hc32l110/
@@ -734,15 +735,8 @@ sudo make install
 
 After OpenOCD installed, please add `/opt/openocd/bin` to PATH env.
 
-### Installation of pyOCD
-pyOCD installation is rather simple the OpenOCD:
 
-```
-python -m pip install pyocd
-```
-After pyocd installed, please add `$HOME/.local/bin` to PATH env to find `pyocd` command.
-
-### OpenOCD usage
+**OpenOCD usage:**
 
 Still use stm32f411 as target, build the 'baremetal-stm32f4' demo in this repo and program it:
 
@@ -750,7 +744,19 @@ Still use stm32f411 as target, build the 'baremetal-stm32f4' demo in this repo a
 openocd -f /usr/share/openocd/scripts/interface/cmsis-dap.cfg -f /usr/share/openocd/scripts/target/stm32f4x.cfg -c "program app.elf verify reset exit"
 ```
 
-### pyOCD usage
+### pyOCD 
+
+**pyOCD installation:**
+pyOCD installation is rather simple the OpenOCD:
+
+```
+python -m pip install pyocd
+```
+After pyocd installed, please add `$HOME/.local/bin` to PATH env to find `pyocd` command.
+
+
+
+**pyOCD usage:**
 After pyOCD installed, you will have the 'pyocd' and 'pyocd-gdbserver' command in your PATH.
 
 To list target pyOCD can support:
@@ -787,13 +793,9 @@ pyocd erase -c -t <target> --config pyocd.yaml
 pyocd load <target hex file>.hex -t <target> --config pyocd.yaml
 ```
 
-
 ## JLink
 
-Segger J-Link support ARMs Serial Wire Debug (SWD), but the utilities is all close sourced, and it's too expensive, not worth to buy for beginners. how to use it will not covered by this tutorial.
-
-Since I had a JLink, what I had to mentioned here for beginners is: 'do not forget to connect the VTRef pin to target device', otherwise J-Link can not detect the target device.
-
+Segger J-Link support ARMs Serial Wire Debug (SWD), but its utilities is all close sourced, and the device is too expensive, not worth to buy for beginners. the usage of jlink will not covered by this tutorial.
 
 # Debugging
 
