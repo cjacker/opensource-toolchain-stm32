@@ -49,11 +49,13 @@ There are also a lot of STM32 clones, such as GD32 / CH32 / AT32 / MM32 etc. Mos
   - AT32F403A
   - APM32F1
   - HC32L110
-  
+  - MM32F3270
+ 
 * ST-LINK / DAPLink for programming and debugging.
   - DAPLink is a cheap, opensource and standard way to program/debug any Cortex-M MCU.
   - If you need work with STM8, buy a ST-Link. If not, buy a DAPLink.
   - JLink can support SWD interface, but it's too expensive and not worth to buy for beginners.
+
 * USB2TTL UART adapter
   - for ISP programming of stm32f103, it does not support USB-DFU.
 
@@ -62,14 +64,16 @@ There are also a lot of STM32 clones, such as GD32 / CH32 / AT32 / MM32 etc. Mos
 As any other ARM based MCUs, the toolchain for STM32 consists of:
 
 * Compiler: GCC / Rust
-* Debugger: OpenOCD/gdb
 * SDKs: Various
   - official SPL in C
   - STM32 Cube/HAL in C
   - libopencm3 in C
   - stm32-hal in rust
   - stm32-rs in rust
-* Programming tool: stm32flash / dfu-util / OpenOCD / pyOCD.
+* Programming tool: 
+  - stm32flash / dfu-util for ISP programming
+  - OpenOCD / pyOCD for DAP programming and debugging
+* Debugging: OpenOCD/gdb
 
 
 # Compiler
@@ -143,22 +147,24 @@ You can always write firmware which directly runs on the hardware without using 
 
 ## Bare Metal Programming
 
-For simple tasks such as blink a led, you can write some bare metal codes without using any libraries, usually a bare metal project of ARM Cortex-M consists of:
+For simple tasks such as blink a led, you can write bare metal codes without using any libraries, usually a bare metal project of ARM Cortex-M consists of:
 
-- **A Linker script** define the memory layout
+- **A Linker script** to define the memory layout.
 - **A startup file** typically written in assembly which:
   + initialize the stack pointer
   + initialize the non-zero read/write-data in RAM
   + initialize the zero read/write-data in RAM
   + define the interrupt vector table
   + jump to the main function
-- **A main function**
+- **A main function** to do the task.
+
+These components are also the essiential minimum components to work with GNU Toolchain.
 
 There are some baremetal demos in this repo for stm32f1/f4/h7 (what I have when written this tutorial), you can take these demos as reference.
 
 ## Official Firmware library
 
-Vendors will provide a firmware library for each part or for a part family. ST STM32 call it as 'SPL' (standard peripherals library), WCH CH32F ship it as 'EVT' and GigaDevice GD32F call it as 'firmware library'. They all have the similar project structure and file organization, and all are very similar to STM32 'SPL'.
+Cortex-M MCU vendors usually provide firmware library for each part or part family. ST STM32 call it as 'SPL' (standard peripherals library), WCH CH32F ship it as 'EVT' and GigaDevice GD32F call it as 'firmware library', etc. They all have the similar project structure and file organization, and all are very similar to original STM32 'SPL'.
 
 **Note:** stm32 'SPL' was deprecated serveral years ago by stm32cube. it's recommend to use Cube/HAL with stm32 instead of 'SPL'.
 
@@ -194,7 +200,7 @@ I make '[ch32f evt convertor](https://github.com/cjacker/ch32f_evt_makefile_gcc_
 
 For more CH32F and GD32F firmware libraries, you can use the convert tools to convert it your self.
 
-If you want to convert other xx32 firmware library, you may need write a linker script and a startup asm file for it. The startup file can be converted from 'ARM' startup file shipped in vendor's package with [startupfile_generator.py](https://raw.githubusercontent.com/cjacker/opensource-toolchain-stm32/main/startupfile_generator.py), this tool is taken and modified from 'platform-gd32'. and there is also a [Linker script template](https://raw.githubusercontent.com/cjacker/opensource-toolchain-stm32/main/ldscript.template.ld) provided, you can modify it according to your MCU, the most important job is to set FLASH SIZE and RAM SIZE.
+If you want to convert other XX32 firmware library, you may need write a linker script and a startup asm file for it. The startup file can be converted from 'ARM' startup file shipped in vendor's package with [startupfile_generator.py](https://raw.githubusercontent.com/cjacker/opensource-toolchain-stm32/main/startupfile_generator.py), this tool is taken and modified from 'platform-gd32'. and there is also a [Linker script template](https://raw.githubusercontent.com/cjacker/opensource-toolchain-stm32/main/ldscript.template.ld) provided, you can modify it according to your MCU, the most important job is to set FLASH SIZE and RAM SIZE.
 
 Use [GD32F4xx firmware library](https://github.com/cjacker/gd32f4xx_firmware_library_gcc_makefile) as example, the default part set to gd32f470zgt6 and the default 'User' codes is to blink four LEDs on LiangShan Pi dev board from JLC.
 
@@ -203,7 +209,7 @@ git clone https://github.com/cjacker/gd32f4xx_firmware_library_gcc_makefile
 make
 ```
 
-The target file 'gd32f470zgt6.elf' will be generated in `build` dir. 
+The target files 'gd32f470zgt6.elf / bin / hex' will be generated in `build` dir. 
 
 ## STM32 Cube/HAL
 
@@ -780,20 +786,28 @@ To program target device:
 pyocd load <target hex file>.hex -t <target>
 ```
 
+You may noticed: if OpenOCD doesn't support specific target device, you have to write some codes, implement a flash driver and patch the OpenOCD to support the specific target device.
 
-You may noticed, if OpenOCD doesn't support specific flash driver, you have to implement and patch it.
+For pyOCD, it will be much simpler. It can directly use flash algos included in CMSIS Device Family Packs (DFPs) as Keil MDK does. You can always find MDK packs for your part from part vendors.
 
-For pyOCD, it can support flash algos included in CMSIS Device Family Packs (DFPs) as MDK does, Usually, part vendor will provide this 'Device pack' file, you can use it wil pyOCD directly.
+If your part is not supported by pyOCD by default, follow bellow steps to use vendor's 'device pack'.
+- Find corresponding 'device pack' file from part vendor and put it at the top dir of your project.
+- create `pyocd.yaml` at the top dir of your project, the contents looks like:
 
-If your part is not supported by pyOCD by default, follow bellow steps to enable 'Device pack'.
-- Find corresponding 'device pack' file and put it at the top dir of your project.
-- create a `pyocd.yaml` at the top dir of your project, the contents looks like:
 ```
 pack:
-  - <Your pack file>
+  - <relative dir of the pack file>
 ```
 
 Then you can use pyocd like:
+
+- to list targets:
+
+```
+pyocd list --targets
+```
+
+- to erase and program the part:
 ```
 pyocd erase -c -t <target> --config pyocd.yaml
 pyocd load <target hex file>.hex -t <target> --config pyocd.yaml
@@ -805,9 +819,12 @@ Since all JLink utilities is close sourced, the usage of JLink will not covered 
 
 # Debugging
 
-Build the codes to enable debug infomation and connect the ST-Link or DAPLink as mentioned above.
+Build the codes in debug mode and connect the ST-Link or DAPLink as mentioned above.
 
 ## OpenOCD
+
+If the target device not supported by OpenOCD, please refer to next section to use 'pyOCD' with 'device pack'.
+
 Launch OpenOCD as:
 ```
 openocd -f /usr/share/openocd/scripts/interface/cmsis-dap.cfg -f /usr/share/openocd/scripts/target/stm32f4x.cfg
@@ -904,3 +921,4 @@ Anyway, you can take below examples/demo codes as reference:
 - [at32f403a_407 firmware library](https://github.com/cjacker/AT32F403A_407_Firmware_Library_gcc_makefile) for at32f403a / 407 and [WeAct BlackPill Board](https://github.com/WeActStudio/WeActStudio.BlackPill)
 - [apm32f10x firmware library](https://github.com/cjacker/apm32f10x_firmware_library_gcc_makefile) for apm32f103cbt6 and [WeAct BluePill Board](https://github.com/WeActStudio/WeActStudio.BluePill-Plus-APM32)
 - [hc32l110 firmware library](https://github.com/cjacker/hc32l110_firmware_library_gcc_makefile) for HuaDa Semiconductor HC32L110 series.
+- [mm32f3270 firmware library](https://github.com/cjacker/mm32f3270_firmware_library_gcc_makefile) for Shanghai MindMotion mm32f3270 series.
