@@ -64,7 +64,7 @@ As any other ARM based MCUs, the toolchain for STM32 consists of:
   - libopencm3 in C
   - stm32-hal in rust
   - stm32-rs in rust
-* Programming tool: stm32flash / dfu-util and OpenOCD.
+* Programming tool: stm32flash / dfu-util / OpenOCD / pyOCD.
 
 
 # Compiler
