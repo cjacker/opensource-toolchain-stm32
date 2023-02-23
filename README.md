@@ -45,6 +45,7 @@ There are also a lot of STM32 clones, such as GD32 / CH32 / AT32 / MM32 etc. Mos
   - CH32F1 
   - AT32F403A
   - APM32F1
+  - HC32L110
   
 * ST-LINK / DAPLink for programming and debugging.
   - DAPLink is a cheap, opensource and standard way to program/debug any Cortex-M MCU.
@@ -649,21 +650,10 @@ openocd -f /usr/share/openocd/scripts/interface/stlink.cfg -f /usr/share/openocd
 
 If you use 'app.bin' in OpenOCD command, the start addr must be append, it should be 'program app.bin 0x8000000'.
 
-### Patch OpenOCD for AT32F
-
-AT32F flash driver is not supported by upstream OpenOCD, you need either build ArteryTek forked OpenOCD or use the patch provided in this repo:
-- Patch for OpenOCD 0.12 and above: [openocd-0.12.0-add-arterytek-driver.patch](https://raw.githubusercontent.com/cjacker/opensource-toolchain-stm32/main/openocd-0.12.0-add-arterytek-driver.patch)
-- ArteryTek Forked OpenOCD : https://github.com/ArteryTek/openocd
-
-### Patch OpenOCD for HC32L110
-
-HC32L110 flash driver is not supported by upstream OpenOCD, you need either build a forked OpenOCD or use the patch provided in this repo:
-- Patch for OpenOCD 0.12 and above: [openocd-0.12.0-add-hc32l110-driver.patch](https://raw.githubusercontent.com/cjacker/opensource-toolchain-stm32/main/openocd-0.12.0-add-hc32l110-driver.patch)
-- Forked OpenOCD to support HC32L110: https://github.com/Spritetm/openocd-hc32l110/
 
 ## DAPLink
 
-DAPLink provides a standardized way to access the Coresight Debug Access Port (DAP) of an ARM Cortex microcontroller via USB. Usually it supports both SWD and serial ports. the connection method is as same as ST-Link.
+DAPLink provides a standardized way to access the Coresight Debug Access Port (DAP) of an ARM Cortex microcontroller via USB. Usually it supports both SWD and serial ports. It can be supported very well by OpenOCD and pyOCD. the pins connection is as same as ST-Link.
 
 ```
 3.3v  -> 3.3v
@@ -672,13 +662,131 @@ SWDIO -> SWDIO
 GND   -> GND
 ```
 
+### Installation of OpenOCD
+
+For this tutorial, since AT32F and HC32L110 flash driver is not support by upstream OpenOCD, We will build a patched OpenOCD:
+- AT32F patch is from https://github.com/ArteryTek/openocd
+- HC32L110 patch is from https://github.com/Spritetm/openocd-hc32l110/
+
+
+```
+https://github.com/openocd-org/openocd.git
+cd openocd
+git submodule update --init --recursive --progress
+
+# patch for ArteryTek AT32F
+wget https://raw.githubusercontent.com/cjacker/opensource-toolchain-stm32/main/openocd-0.12.0-add-arterytek-driver.patch
+cat penocd-0.12.0-add-arterytek-driver.patch|patch -p1
+# patch for HuaDa HC32L110
+wget https://raw.githubusercontent.com/cjacker/opensource-toolchain-stm32/main/openocd-0.12.0-add-hc32l110-driver.patch
+cat openocd-0.12.0-add-hc32l110-driver.patch|patch -p1
+
+# configure and built it
+./bootstrap
+./configure --prefix=/opt/openocd \
+  --disable-werror \
+  --enable-static \
+  --disable-shared \
+  --enable-dummy \
+  --enable-ftdi \
+  --enable-stlink \
+  --enable-ti-icdi \
+  --enable-ulink \
+  --enable-usb-blaster-2 \
+  --enable-ft232r \
+  --enable-vsllink \
+  --enable-xds110 \
+  --enable-cmsis-dap-v2 \
+  --enable-osbdm \
+  --enable-opendous \
+  --enable-aice \
+  --enable-usbprog \
+  --enable-rlink \
+  --enable-armjtagew \
+  --enable-cmsis-dap \
+  --enable-nulink \
+  --enable-kitprog \
+  --enable-usb-blaster \
+  --enable-presto \
+  --enable-openjtag \
+  --enable-jlink \
+  --enable-parport \
+  --enable-jtag_vpi \
+  --enable-jtag_dpi \
+  --enable-ioutil \
+  --enable-amtjtagaccel \
+  --enable-ep39xx \
+  --enable-at91rm9200 \
+  --enable-gw16012 \
+  --enable-oocd_trace \
+  --enable-buspirate \
+  --enable-sysfsgpio \
+  --enable-linuxgpiod \
+  --enable-xlnx-pcie-xvc \
+  --enable-remote-bitbang \
+  --disable-internal-jimtcl \
+  --disable-doxygen-html \
+  CROSS=
+
+make -j4
+sudo make install
+```
+
+After OpenOCD installed, please add `/opt/openocd/bin` to PATH env.
+
+### Installation of pyOCD
+pyOCD installation is rather simple the OpenOCD:
+
+```
+python -m pip install pyocd
+```
+After pyocd installed, please add `$HOME/.local/bin` to PATH env to find `pyocd` command.
+
+### OpenOCD usage
+
 Still use stm32f411 as target, build the 'baremetal-stm32f4' demo in this repo and program it:
 
 ```
 openocd -f /usr/share/openocd/scripts/interface/cmsis-dap.cfg -f /usr/share/openocd/scripts/target/stm32f4x.cfg -c "program app.elf verify reset exit"
 ```
 
-**For AT32F series**, you need to patch OpenOCD to support at32f flash drivers, also various some at32f target configs, please refer to the section '[Patch OpenOCD for AT32F](https://github.com/cjacker/opensource-toolchain-stm32#patch-openocd-for-at32f)'.
+### pyOCD usage
+After pyOCD installed, you will have the 'pyocd' and 'pyocd-gdbserver' command in your PATH.
+
+To list target pyOCD can support:
+```
+pyocd list --targets
+```
+
+To erase target device:
+```
+pyocd erase -c -t <target>
+```
+
+To program target device:
+```
+pyocd load <target hex file>.hex -t <target>
+```
+
+
+You may noticed, if OpenOCD doesn't support specific flash driver, you have to implement and patch it.
+
+For pyOCD, it can support flash algos included in CMSIS Device Family Packs (DFPs) as MDK does, Usually, part vendor will provide this 'Device pack' file, you can use it wil pyOCD directly.
+
+If your part is not supported by pyOCD by default, follow bellow steps to enable 'Device pack'.
+- Find corresponding 'device pack' file and put it at the top dir of your project.
+- create a `pyocd.yaml` at the top dir of your project, the contents looks like:
+```
+pack:
+  - <Your pack file>
+```
+
+Then you can use pyocd like:
+```
+pyocd erase -c -t <target> --config pyocd.yaml
+pyocd load <target hex file>.hex -t <target> --config pyocd.yaml
+```
+
 
 ## JLink
 
