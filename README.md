@@ -31,6 +31,7 @@ There are also a lot of STM32 clones, such as GD32 / CH32 / AT32 / MM32 etc. Mos
         - [USB-DFU](https://github.com/cjacker/opensource-toolchain-stm32#usb-dfu)
     - [ST-Link](https://github.com/cjacker/opensource-toolchain-stm32#st-link)
       + [Patch OpenOCD for AT32F](https://github.com/cjacker/opensource-toolchain-stm32#patch-openocd-for-at32f)
+      + [Patch OpenOCD for HC32L110](https://github.com/cjacker/opensource-toolchain-stm32#patch-openocd-for-hc32l110)
     - [DAPLink](https://github.com/cjacker/opensource-toolchain-stm32#daplink)
     - [JLink](https://github.com/cjacker/opensource-toolchain-stm32#jlink)
   + [Debugging](https://github.com/cjacker/opensource-toolchain-stm32#debugging)
@@ -646,13 +647,19 @@ You can also use OpenOCD with ST-LINK:
 openocd -f /usr/share/openocd/scripts/interface/stlink.cfg -f /usr/share/openocd/scripts/target/stm32f4x.cfg -c "program app.elf verify reset exit"
 ```
 
-If you use 'app.bin' in OpenOcd command, the start addr must be append, it should be 'program app.bin 0x8000000'.
+If you use 'app.bin' in OpenOCD command, the start addr must be append, it should be 'program app.bin 0x8000000'.
 
 ### Patch OpenOCD for AT32F
 
 AT32F flash driver is not supported by upstream OpenOCD, you need either build ArteryTek forked OpenOCD or use the patch provided in this repo:
 - Patch for OpenOCD 0.12 and above: [openocd-0.12.0-add-arterytek-driver.patch](https://raw.githubusercontent.com/cjacker/opensource-toolchain-stm32/main/openocd-0.12.0-add-arterytek-driver.patch)
-- ArteryTek Forked OpenOcd : https://github.com/ArteryTek/openocd
+- ArteryTek Forked OpenOCD : https://github.com/ArteryTek/openocd
+
+### Patch OpenOCD for HC32L110
+
+HC32L110 flash driver is not supported by upstream OpenOCD, you need either build a forked OpenOCD or use the patch provided in this repo:
+- Patch for OpenOCD 0.12 and above: [openocd-0.12.0-add-hc32l110-driver.patch](https://raw.githubusercontent.com/cjacker/opensource-toolchain-stm32/main/openocd-0.12.0-add-hc32l110-driver.patch)
+- Forked OpenOCD to support HC32L110: https://github.com/Spritetm/openocd-hc32l110/
 
 ## DAPLink
 
