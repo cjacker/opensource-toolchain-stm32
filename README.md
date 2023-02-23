@@ -35,6 +35,9 @@ There are also a lot of STM32 clones, such as GD32 / CH32 / AT32 / MM32 etc. Mos
       + [pyOCD](https://github.com/cjacker/opensource-toolchain-stm32/blob/main/README.md#pyocd)
     - [JLink](https://github.com/cjacker/opensource-toolchain-stm32#jlink)
   + [Debugging](https://github.com/cjacker/opensource-toolchain-stm32#debugging)
+    - [OpenOCD](https://github.com/cjacker/opensource-toolchain-stm32/blob/main/README.md#openocd-1)
+    - [pyOCD](https://github.com/cjacker/opensource-toolchain-stm32/blob/main/README.md#pyocd-1)
+    - [Debugging with gdb](https://github.com/cjacker/opensource-toolchain-stm32/blob/main/README.md#debugging-with-gdb)
   + [Project templates](https://github.com/cjacker/opensource-toolchain-stm32#project-templates)
   
 # Hardware prerequist
