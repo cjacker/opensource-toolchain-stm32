@@ -34,6 +34,8 @@ There are also a lot of STM32 clones, such as GD32 / CH32 / AT32 / MM32 etc. Mos
       + [OpenOCD](https://github.com/cjacker/opensource-toolchain-stm32/blob/main/README.md#openocd)
       + [pyOCD](https://github.com/cjacker/opensource-toolchain-stm32/blob/main/README.md#pyocd)
     - [JLink](https://github.com/cjacker/opensource-toolchain-stm32#jlink)
+    - [Special Case 1: Synwit SWM](https://github.com/cjacker/opensource-toolchain-stm32#special-case-1-synwit-swm)
+    - [Special Case 2: Luat Core-AIR105 devboard](https://github.com/cjacker/opensource-toolchain-stm32#special-case-2-luat-core-air105-devboard)
   + [Debugging](https://github.com/cjacker/opensource-toolchain-stm32#debugging)
     - [OpenOCD](https://github.com/cjacker/opensource-toolchain-stm32/blob/main/README.md#openocd-1)
     - [pyOCD](https://github.com/cjacker/opensource-toolchain-stm32/blob/main/README.md#pyocd-1)
@@ -831,6 +833,9 @@ cd SWMProg
 git checkout linux
 python ./SWMProg.py
 ```
+
+No OpenOCD / pyOCD debugging support up to now.
+
 ## Special Case 2: Luat Core-AIR105 devboard
 
 AIR105 and MHS1903s is same, it no doubt support SWD, but Luat Core-AIR105 devboard did not export SWD interface, If you do not want to modify the hardware, you have to use [air105-uploader](https://github.com/racerxdl/air105-uploader) to program this devboard.
@@ -840,6 +845,8 @@ git clone https://github.com/racerxdl/air105-uploader
 cd air105-uploader
 python upload.py /dev/ttyUSB0 <air105 / mh1903 bin file>
 ```
+
+No OpenOCD / pyOCD debugging support up to now.
 
 # Debugging
 
