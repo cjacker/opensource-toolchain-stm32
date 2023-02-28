@@ -1,6 +1,10 @@
 # Opensource toolchain for ARM Cortex-M (For example, STM32)
 
-STM32 is a family of 32-bit microcontroller integrated circuits by STMicroelectronics. The STM32 chips are grouped into related series that are based around the same 32-bit ARM processor core, such as the Cortex-M33F, Cortex-M7F, Cortex-M4F, Cortex-M3, Cortex-M0+, or Cortex-M0. Internally, each microcontroller consists of the processor core, static RAM, flash memory, debugging interface, and various peripherals.
+The ARM Cortex-M is a group of 32-bit RISC ARM processor cores licensed by Arm Holdings. These cores are optimized for low-cost and energy-efficient integrated circuits, which have been embedded in tens of billions of consumer devices. Though they are most often the main component of microcontroller chips, sometimes they are embedded inside other types of chips too. The Cortex-M family consists of Cortex-M0, Cortex-M0+, Cortex-M1, Cortex-M3, Cortex-M4, Cortex-M7, Cortex-M23, Cortex-M33, Cortex-M35P, Cortex-M55. The Cortex-M4 / M7 / M33 / M35P / M55 cores have an FPU silicon option, and when included in the silicon these cores are sometimes known as "Cortex-Mx with FPU" or "Cortex-MxF", where 'x' is the core variant. 
+
+Arm Holdings neither manufactures nor sells CPU devices based on its own designs, but rather licenses the processor architecture to interested parties. Arm offers a variety of licensing terms, varying in cost and deliverables. To all licensees, Arm provides an integratable hardware description of the ARM core, as well as complete software development toolset and the right to sell manufactured silicon containing the ARM CPU. 
+
+STM32 is a family of 32-bit ARM Cortex-M based microcontroller integrated circuits by STMicroelectronics. The STM32 chips are grouped into related series that are based around the same 32-bit ARM processor core, such as the Cortex-M33F, Cortex-M7F, Cortex-M4F, Cortex-M3, Cortex-M0+, or Cortex-M0. Internally, each microcontroller consists of the processor core, static RAM, flash memory, debugging interface, and various peripherals.
 
 The STM32 family consists of 17 series of microcontrollers: H7, F7, F4, F3, F2, F1, F0, G4, G0, L5, L4, L4+ L1, L0, U5, WL, WB. and each series includes a lot of models with minor differences.
 
@@ -44,16 +48,17 @@ There are also a lot of STM32 clones, such as GD32 / CH32 / AT32 / MM32 etc. Mos
   
 # Hardware prerequist
 
-* A development board with STM32 MCU. In this tutorial, I use :
-  - STM32F1 / F4 / H7
-  - GD32F1 / F3 / F4
-  - CH32F1 
-  - AT32F403A
-  - APM32F1
-  - HC32L110
-  - MM32F3270
-  - Luat AIR105
-  - Luat SWM181[CBT6]
+* A development board with STM32 MCU. 
+  - In this tutorial, I use below devboards. all resources such as firmware libraries will be provided:
+    +  STM32F1 / F4 / H7
+    +  GD32F1 / F3 / F4
+    +  CH32F1
+    +  AT32F403A
+    +  APM32F1
+    +  HC32L110
+    +  MM32F3270
+    +  Luat AIR105 (MH1903S)
+    +  SynWit SWM181[CBT6]
  
 * ST-LINK / DAPLink for programming and debugging.
   - DAPLink is a cheap, opensource and standard way to program/debug any Cortex-M MCU.
@@ -939,7 +944,7 @@ Breakpoint 1, main () at main.c:26
 # Project templates
 Since there are a lot of different SDKs for STM32 and XX32, unified project templates is not exist, it depends on which programming language and library you use. 
 
-Anyway, you can take below examples/demo codes as reference:
+Anyway, here list all libraries mentioned in this tutorial, you can take these examples/demo codes as reference to start your own project:
 
 - [libopencm3-miniblink](https://github.com/libopencm3/libopencm3-miniblink) for libopencm3
 - [stm32-hal-quickstart](https://github.com/David-OConnor/stm32-hal-quickstart) for rust stm32-hal.
