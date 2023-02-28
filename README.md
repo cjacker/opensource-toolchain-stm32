@@ -50,6 +50,8 @@ There are also a lot of STM32 clones, such as GD32 / CH32 / AT32 / MM32 etc. Mos
   - APM32F1
   - HC32L110
   - MM32F3270
+  - Luat AIR105
+  - Luat SWM181[CBT6]
  
 * ST-LINK / DAPLink for programming and debugging.
   - DAPLink is a cheap, opensource and standard way to program/debug any Cortex-M MCU.
@@ -817,6 +819,28 @@ pyocd load <target hex file>.hex -t <target> --config pyocd.yaml
 Since all JLink utilities is close sourced, the usage of JLink will not covered by this tutorial.
 
 
+## Special Case 1: Synwit SWM
+
+Up to now, Synwit SWM MCU based on Cortex-M can not programed/debugged with OpenOCD or pyOCD, we have to use `SWMProg` to program it.
+
+I made a fork to enable linux for SWMProg here: https://github.com/cjacker/SWMProg
+
+```
+git clone https://github.com/cjacker/SWMProg
+cd SWMProg
+git checkout linux
+python ./SWMProg.py
+```
+## Special Case 2: Luat Core-AIR105 devboard
+
+AIR105 and MHS1903s is same, it no doubt support SWD, but Luat Core-AIR105 devboard did not export SWD interface, If you do not want to modify the hardware, you have to use [air105-uploader](https://github.com/racerxdl/air105-uploader) to program this devboard.
+
+```
+git clone https://github.com/racerxdl/air105-uploader
+cd air105-uploader
+python upload.py /dev/ttyUSB0 <air105 / mh1903 bin file>
+```
+
 # Debugging
 
 Build the codes in debug mode and connect the ST-Link or DAPLink as mentioned above.
@@ -922,3 +946,5 @@ Anyway, you can take below examples/demo codes as reference:
 - [apm32f10x firmware library](https://github.com/cjacker/apm32f10x_firmware_library_gcc_makefile) for apm32f103cbt6 and [WeAct BluePill Board](https://github.com/WeActStudio/WeActStudio.BluePill-Plus-APM32)
 - [hc32l110 firmware library](https://github.com/cjacker/hc32l110_firmware_library_gcc_makefile) for HuaDa Semiconductor HC32L110 series.
 - [mm32f3270 firmware library](https://github.com/cjacker/mm32f3270_firmware_library_gcc_makefile) for Shanghai MindMotion mm32f3270 series.
+- [air105 / mhs1903s firmware library](https://github.com/cjacker/mh1903_firmware_library_gcc_makefile) for Luat air105 / MegaHunt mh1903[s] 
+- [swm181 firmware library](https://github.com/cjacker/swm181_firmware_library_gcc_makefile) for SynWit SWM181.
