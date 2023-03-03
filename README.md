@@ -376,6 +376,15 @@ the target elf file will be generated at `./target/thumbv7em-none-eabihf/release
 
 # Programming
 
+There are various ways to program a Cortex-M part:
+
+- UART or USB ISP if it had a factory bootloader.
+- STLink if it's a STM32 part.
+- CMSIS-DAP
+  + OpenOCD if your part already supported by this opensource tool
+  + pyOCD if vendor provide DFP Pack
+- JLink if vendor provide JFlash support
+
 ## ISP
 
 Almost every STM32 MCU has a bootloader, the bootloader is stored in the internal boot ROM (system memory) of STM32 devices, and is programmed by ST during production. Its main task is to download the application program to the internal Flash memory through one of the available serial peripherals (such as USART, CAN, USB, I2C, SPI).
@@ -825,10 +834,12 @@ pyocd load <target hex file>.hex -t <target> --config pyocd.yaml
 ## JLink
 Since all JLink utilities is close sourced, the usage of JLink will not covered by this tutorial.
 
+What I have to mentioned here is : If you really can not find a opensource way to program / debug your xx32 devices, you could use JFlash support pack from vendor to program / debug your device by JFlash and JLinkGDBServer.
+
 
 ## Special Case 1: Synwit SWM
 
-Up to now, Synwit SWM MCU based on Cortex-M can not programed/debugged with OpenOCD or pyOCD, we have to use `SWMProg` to program it.
+Up to now, Synwit SWM MCU based on Cortex-M can not programed/debugged with OpenOCD or pyOCD (the official DFP Pack not works as expected), we have to use `SWMProg` or JLink to program it.
 
 I made a fork to enable linux for SWMProg here: https://github.com/cjacker/SWMProg
 
@@ -838,8 +849,6 @@ cd SWMProg
 git checkout linux
 python ./SWMProg.py
 ```
-
-No OpenOCD / pyOCD debugging support up to now.
 
 ## Special Case 2: Luat Core-AIR105 devboard
 
@@ -855,11 +864,11 @@ No OpenOCD / pyOCD debugging support up to now.
 
 # Debugging
 
-Build the codes in debug mode and connect the ST-Link or DAPLink as mentioned above.
+Build the codes in debug mode and connect the ST-Link or DAPLink or JLink as mentioned above.
 
 ## OpenOCD
 
-If the target device not supported by OpenOCD, please refer to next section to use 'pyOCD' with 'device pack'.
+If the target device not supported by OpenOCD, please refer to next section to use 'pyOCD' with 'device pack' or JLink.
 
 Launch OpenOCD as:
 ```
