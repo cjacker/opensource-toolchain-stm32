@@ -841,7 +841,7 @@ What I have to mentioned here is : If you really can not find a opensource way t
 
 Up to now, Synwit SWM MCU based on Cortex-M can not programed/debugged with OpenOCD or pyOCD (the official DFP Pack not works as expected), we have to use `SWMProg` or JLink to program it.
 
-I made a fork to enable linux for SWMProg here: https://github.com/cjacker/SWMProg
+I made a fork to enable linux support for SWMProg here: https://github.com/cjacker/SWMProg
 
 ```
 git clone https://github.com/cjacker/SWMProg
@@ -850,17 +850,17 @@ git checkout linux
 python ./SWMProg.py
 ```
 
+Besides SWMProg, you could be able to use JLink with [upstream JFlash pack](https://github.com/Synwit-Co-Ltd/JFlash) to program and debug SWM32 MCU.
+
 ## Special Case 2: Luat Core-AIR105 devboard
 
-AIR105 and MHS1903s is same, it no doubt support SWD, but Luat Core-AIR105 devboard did not export SWD interface, If you do not want to modify the hardware, you have to use [air105-uploader](https://github.com/racerxdl/air105-uploader) to program this devboard.
+AIR105 and MHS1903s is identical, it no doubt can support SWD, but Luat Core-AIR105 devboard did not export SWD interface, If you do not want to modify the hardware, you have to use [air105-uploader](https://github.com/racerxdl/air105-uploader) to program this devboard.
 
 ```
 git clone https://github.com/racerxdl/air105-uploader
 cd air105-uploader
 python upload.py /dev/ttyUSB0 <air105 / mh1903 bin file>
 ```
-
-No OpenOCD / pyOCD debugging support up to now.
 
 # Debugging
 
