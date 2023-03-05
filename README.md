@@ -10,7 +10,7 @@ The STM32 family consists of 17 series of microcontrollers: H7, F7, F4, F3, F2, 
 
 For more information about STM32 family, please refer to https://en.wikipedia.org/wiki/STM32.
 
-There are also a lot of STM32 clones, such as GD32 / CH32 / AT32 / MM32 etc. Most of them keep compatible with STM32. The toolchains and utilities described in this tutorial could also be used with such parts from different vendors.
+There are also a lot of STM32 clones, such as GD32 / CH32 / AT32 / MM32 etc. Most of them try to keep compatible with STM32, but they may also have their own SDKs / firmware libraries. The toolchains and utilities described in this tutorial could be used with such parts from different vendors.
 
 # Table of contents
   + [Hardware prerequist](https://github.com/cjacker/opensource-toolchain-stm32#hardware-prerequist)
@@ -60,18 +60,15 @@ There are also a lot of STM32 clones, such as GD32 / CH32 / AT32 / MM32 etc. Mos
     +  Luat AIR105 (MH1903S)
     +  SynWit SWM181[CBT6]
  
-* ST-LINK / DAPLink for programming and debugging.
+* ST-LINK / DAPLink adapter for programming and debugging.
   - DAPLink is a cheap, opensource and standard way to program/debug any Cortex-M MCU.
-  - If you need work with STM8, buy a ST-Link. If not, buy a DAPLink.
+  - If you need work with STM8, buy a ST-Link (it also support SWIM interface used by STM8). If not, buy a DAPLink.
   - JLink can support SWD interface, but it's too expensive and not worth to buy for beginners.
 
 * USB2TTL UART adapter
-  - for ISP programming of stm32f103, it does not support USB-DFU.
+  - for ISP programming of stm32f103, it doesn't support USB-DFU.
 
 # Toolchain overview
-
-As any other ARM based MCUs, the toolchain for STM32 consists of:
-
 * Compiler: GCC / Rust
 * SDKs: Various
   - official SPL in C
@@ -82,7 +79,7 @@ As any other ARM based MCUs, the toolchain for STM32 consists of:
 * Programming tool: 
   - stm32flash / dfu-util for ISP programming
   - OpenOCD / pyOCD for DAP programming and debugging
-* Debugging: OpenOCD/gdb
+* Debugging: OpenOCD and pyOCD / gdb
 
 
 # Compiler
