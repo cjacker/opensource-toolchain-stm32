@@ -376,14 +376,16 @@ the target elf file will be generated at `./target/thumbv7em-none-eabihf/release
 
 # Programming
 
-There are various ways to program a Cortex-M part:
+There are various ways to program a Cortex-M part, all Cortex-M parts should support SWD program and debug interface.
 
-- UART or USB ISP if it had a factory bootloader.
-- STLink if it's a STM32 part.
-- CMSIS-DAP
-  + OpenOCD if your part already supported by this opensource tool
+- UART or USB ISP if it had a factory bootloader, please check datasheet.
+- ST-Link if it's a STM32 part.
+- CMSIS-DAP / DAP-Link
+  + OpenOCD if your part already supported by OpenOCD
   + pyOCD if vendor provide DFP Pack
 - JLink if vendor provide JFlash support
+
+The advantage of pyOCD is : it can use the flash algo pack for Keil MDK directly.
 
 ## ISP
 
@@ -697,7 +699,6 @@ For this tutorial, since AT32F and HC32L110 flash driver is not support by upstr
 - AT32F patch is from https://github.com/ArteryTek/openocd
 - HC32L110 patch is from https://github.com/Spritetm/openocd-hc32l110/
 
-
 ```
 https://github.com/openocd-org/openocd.git
 cd openocd
@@ -776,14 +777,12 @@ openocd -f /usr/share/openocd/scripts/interface/cmsis-dap.cfg -f /usr/share/open
 
 **pyOCD installation:**
 
-pyOCD installation is rather simple the OpenOCD:
+pyOCD installation is rather simpler than OpenOCD:
 
 ```
 python -m pip install pyocd
 ```
 After pyocd installed, please add `$HOME/.local/bin` to PATH env to find `pyocd` command.
-
-
 
 **pyOCD usage:**
 
@@ -804,9 +803,9 @@ To program target device:
 pyocd load <target hex file>.hex -t <target>
 ```
 
-You may noticed: if OpenOCD doesn't support specific target device, you have to write some codes, implement a flash driver and patch the OpenOCD to support the specific target device.
+You may noticed: if OpenOCD doesn't support specific target device, you have to patch OpenOCD to support it.
 
-For pyOCD, it will be much simpler. It can directly use flash algos included in CMSIS Device Family Packs (DFPs) as Keil MDK does. You can always find MDK packs for your part from part vendors.
+For pyOCD, it will be simpler. It can directly use flash algos included in CMSIS Device Family Packs (DFPs) as Keil MDK does. You can always find MDK packs for your part from part vendors.
 
 If your part is not supported by pyOCD by default, follow bellow steps to use vendor's 'device pack'.
 - Find corresponding 'device pack' file from part vendor and put it at the top dir of your project.
@@ -834,12 +833,12 @@ pyocd load <target hex file>.hex -t <target> --config pyocd.yaml
 ## JLink
 Since all JLink utilities is close sourced, the usage of JLink will not covered by this tutorial.
 
-What I have to mentioned here is : If you really can not find a opensource way to program / debug your xx32 devices, you could use JFlash support pack from vendor to program / debug your device by JFlash and JLinkGDBServer.
+What I have to mentioned here is : If you really can not find a opensource way to program / debug your parts, you would be able to use JFlash support pack from vendor to program / debug your device by JFlash and JLinkGDBServer.
 
 
 ## Special Case 1: Synwit SWM
 
-Up to now, Synwit SWM MCU based on Cortex-M can not programed/debugged with OpenOCD or pyOCD (the official DFP Pack not works as expected), we have to use `SWMProg` or JLink to program it.
+Up to now, Synwit SWM MCU based on Cortex-M can not be programed/debugged with OpenOCD or pyOCD (the official DFP Pack not works as expected), we have to use `SWMProg` or JLink to program it.
 
 I made a fork to enable linux support for SWMProg here: https://github.com/cjacker/SWMProg
 
@@ -850,7 +849,7 @@ git checkout linux
 python ./SWMProg.py
 ```
 
-Besides SWMProg, you could be able to use JLink with [upstream JFlash pack](https://github.com/Synwit-Co-Ltd/JFlash) to program and debug SWM32 MCU.
+Besides SWMProg, you could also be able to use JLink with [upstream JFlash pack](https://github.com/Synwit-Co-Ltd/JFlash) to program and debug SWM32 MCU.
 
 ## Special Case 2: Luat Core-AIR105 devboard
 
