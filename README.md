@@ -221,7 +221,71 @@ The target files 'gd32f470zgt6.elf / bin / hex' will be generated in `build` dir
 
 STM32CubeMX is a graphical tool that allows a very easy configuration of STM32 microcontrollers and microprocessors, as well as the generation of the corresponding initialization C code. 
 
-STM32CubeMX can support generate 'Makefile' project for Linux and arm-gcc toolchain. It's very easy to use, just follow the wizard, select your mcu model, and choose 'Makefile' project, a skeleton of a new project will be generated and can use `make` to build.
+STM32CubeMX can support generate 'Makefile' project for Linux and arm-gcc toolchain. It's very easy to use, just follow the wizard, select your mcu model, tune some configurations, and choose 'Makefile' project, a skeleton of a new project will be generated and can use `make` to build directly.
+
+You may encounter some warnings such as: 
+
+```
+warning: _write is not implemented and will always fail
+warning: _read is not implemented and will always fail
+```
+
+And notice that uart printf by implementing and redirecting 'fputc' doesn't work anymore.
+
+This issue is gcc toolchain specifc, instead of `fputc` and `fgetc`, you should implement `_write` and `_read` for gcc toolchain, etc. 
+
+An easy way to solve this issue is find `syscalls.c` from https://github.com/STMicroelectronics/ for your parts, it defined `_write` and `_read` as:
+
+```
+__attribute__((weak)) int _read(int file, char *ptr, int len)
+{
+  int DataIdx;
+  for (DataIdx = 0; DataIdx < len; DataIdx++)
+  {
+    *ptr++ = __io_getchar();
+  }
+return len;
+}
+
+__attribute__((weak)) int _write(int file, char *ptr, int len)
+{
+  int DataIdx;
+  for (DataIdx = 0; DataIdx < len; DataIdx++)
+  {
+    __io_putchar(*ptr++);
+  }
+  return len;
+}
+```
+
+What you need to do is implement `__io_putchar` and `__io_getchar`, for example:
+
+```
+// these codes works with MDK and GCC.
+#ifdef __GNUC__
+#define PUTCHAR_PROTOTYPE int __io_putchar(int ch)
+#define GETCHAR_PROTOTYPE int __io_getchar(void)
+#else
+#define PUTCHAR_PROTOTYPE int fputc(int ch, FILE *f)
+#define GETCHAR_PROTOTYPE int fgetc(FILE* f)
+#endif
+
+
+PUTCHAR_PROTOTYPE
+{
+  HAL_UART_Transmit(&huart1, (uint8_t*)&ch, 1, HAL_MAX_DELAY);
+  return (ch);
+}
+
+GETCHAR_PROTOTYPE
+{
+  HAL_StatusTypeDef status = HAL_BUSY;
+  uint8_t data;
+  while(status != HAL_OK)
+    status = HAL_UART_Receive(&huart1, &data, 1, HAL_MAX_DELAY);
+  return (data);
+}
+```
 
 ## libopencm3
 
