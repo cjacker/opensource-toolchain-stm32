@@ -50,7 +50,7 @@ There are also a lot of STM32 clones, such as GD32 / CH32 / AT32 / MM32 etc. Mos
 
 * A development board with STM32 MCU. 
   - In this tutorial, I use below devboards. all resources such as firmware libraries will be provided:
-    +  STM32F1 / F4 / H7
+    +  STM32G0 / F1 / F4 / H7
     +  GD32F1 / F3 / F4
     +  CH32F1
     +  AT32F403A
