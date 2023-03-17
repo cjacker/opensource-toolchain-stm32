@@ -13,38 +13,39 @@ For more information about STM32 family, please refer to https://en.wikipedia.or
 There are also a lot of STM32 clones, such as GD32 / CH32 / AT32 / MM32 etc. Most of them try to keep compatible with STM32, but they may also have their own SDKs / firmware libraries. The toolchains and utilities described in this tutorial could be used with such parts from different vendors.
 
 # Table of contents
-  + [Hardware prerequist](https://github.com/cjacker/opensource-toolchain-stm32#hardware-prerequist)
-  + [Toolchain overview](https://github.com/cjacker/opensource-toolchain-stm32#toolchain-overview)
-  + [Compiler](https://github.com/cjacker/opensource-toolchain-stm32#compiler)
-    - [GCC](https://github.com/cjacker/opensource-toolchain-stm32#gcc)
-      + [from XPack](https://github.com/cjacker/opensource-toolchain-stm32#from-xpack)
-      + [from ARM](https://github.com/cjacker/opensource-toolchain-stm32#from-arm)
-    - [Rust](https://github.com/cjacker/opensource-toolchain-stm32#rust)
-  + [SDKs](https://github.com/cjacker/opensource-toolchain-stm32#sdks)
-    - [Bare metal programming](https://github.com/cjacker/opensource-toolchain-stm32#bare-metal-programming)
-    - [Official Firmware library](https://github.com/cjacker/opensource-toolchain-stm32#official-firmware-library)
-    - [STM32 Cube/HAL](https://github.com/cjacker/opensource-toolchain-stm32#stm32-cubehal)
-    - [libopencm3](https://github.com/cjacker/opensource-toolchain-stm32#libopencm3)
-    - [Rust stm32-hal](https://github.com/cjacker/opensource-toolchain-stm32#stm32-hal)
-    - [Rust stm32-rs](https://github.com/cjacker/opensource-toolchain-stm32#stm32-rs)
-  + [Programming](https://github.com/cjacker/opensource-toolchain-stm32#programming)
-    - [ISP](https://github.com/cjacker/opensource-toolchain-stm32#isp)
-      + [to activate ISP mode](https://github.com/cjacker/opensource-toolchain-stm32#to-activate-isp-mode)
-      + [ISP programming](https://github.com/cjacker/opensource-toolchain-stm32#isp-programming)
-        - [UART](https://github.com/cjacker/opensource-toolchain-stm32#uart-isp)
-        - [USB-DFU](https://github.com/cjacker/opensource-toolchain-stm32#usb-dfu)
-    - [ST-Link](https://github.com/cjacker/opensource-toolchain-stm32#st-link)
-    - [DAPLink](https://github.com/cjacker/opensource-toolchain-stm32#daplink)
-      + [OpenOCD](https://github.com/cjacker/opensource-toolchain-stm32/blob/main/README.md#openocd)
-      + [pyOCD](https://github.com/cjacker/opensource-toolchain-stm32/blob/main/README.md#pyocd)
-    - [JLink](https://github.com/cjacker/opensource-toolchain-stm32#jlink)
-    - [Special Case 1: Synwit SWM](https://github.com/cjacker/opensource-toolchain-stm32#special-case-1-synwit-swm)
-    - [Special Case 2: Luat Core-AIR105 devboard](https://github.com/cjacker/opensource-toolchain-stm32#special-case-2-luat-core-air105-devboard)
-  + [Debugging](https://github.com/cjacker/opensource-toolchain-stm32#debugging)
-    - [OpenOCD](https://github.com/cjacker/opensource-toolchain-stm32/blob/main/README.md#openocd-1)
-    - [pyOCD](https://github.com/cjacker/opensource-toolchain-stm32/blob/main/README.md#pyocd-1)
-    - [Debugging with gdb](https://github.com/cjacker/opensource-toolchain-stm32/blob/main/README.md#debugging-with-gdb)
-  + [Project templates](https://github.com/cjacker/opensource-toolchain-stm32#project-templates)
+  + [Hardware prerequist](#hardware-prerequist)
+  + [Toolchain overview](#toolchain-overview)
+  + [Compiler](#compiler)
+    - [GCC](#gcc)
+      + [from XPack](#from-xpack)
+      + [from ARM](#from-arm)
+    - [Rust](#rust)
+  + [SDKs](#sdks)
+    - [Bare metal programming](#bare-metal-programming)
+    - [Official Firmware library](#official-firmware-library)
+    - [STM32 Cube/HAL](#stm32-cubehal)
+    - [libopencm3](#libopencm3)
+    - [Rust stm32-hal](#stm32-hal)
+    - [Rust stm32-rs](#stm32-rs)
+    - [nRF5 SDK](#nrf5-sdk)
+  + [Programming](#programming)
+    - [ISP](#isp)
+      + [to activate ISP mode](#to-activate-isp-mode)
+      + [ISP programming](#isp-programming)
+        - [UART](#uart-isp)
+        - [USB-DFU](#usb-dfu)
+    - [ST-Link](#st-link)
+    - [DAPLink](#daplink)
+      + [OpenOCD](#openocd)
+      + [pyOCD](#pyocd)
+    - [JLink](#jlink)
+    - [Special Case 1: Synwit SWM](#special-case-1-synwit-swm)
+    - [Special Case 2: Luat Core-AIR105 devboard](#special-case-2-luat-core-air105-devboard)
+  + [Debugging](#debugging)
+    - [OpenOCD](#openocd-1)
+    - [pyOCD](#pyocd-1)
+    - [Debugging with gdb](#debugging-with-gdb)
+  + [Project templates](#project-templates)
   
 # Hardware prerequist
 
@@ -206,7 +207,7 @@ I make '[ch32f evt convertor](https://github.com/cjacker/ch32f_evt_makefile_gcc_
 
 For more CH32F and GD32F firmware libraries, you can use the convert tools to convert it your self.
 
-If you want to convert other XX32 firmware library, you may need write a linker script and a startup asm file for it. The startup file can be converted from 'ARM' startup file shipped in vendor's package with [startupfile_generator.py](https://raw.githubusercontent.com/cjacker/opensource-toolchain-stm32/main/startupfile_generator.py), this tool is taken and modified from 'platform-gd32'. and there is also a [Linker script template](https://raw.githubusercontent.com/cjacker/opensource-toolchain-stm32/main/ldscript.template.ld) provided, you can modify it according to your MCU, the most important job is to set FLASH SIZE and RAM SIZE.
+If you want to convert other XX32 firmware library, you may need write a linker script and a startup asm file for it. The startup file can be converted from 'ARM' startup file shipped in vendor's package with [startupfile_generator.py](./startupfile_generator.py), this tool is taken and modified from 'platform-gd32'. and there is also a [Linker script template](./ldscript.template.ld) provided, you can modify it according to your MCU, the most important job is to set FLASH SIZE and RAM SIZE.
 
 Use [GD32F4xx firmware library](https://github.com/cjacker/gd32f4xx_firmware_library_gcc_makefile) as example, the default part set to gd32f470zgt6 and the default 'User' codes is to blink four LEDs on LiangShan Pi dev board from JLC.
 
@@ -434,6 +435,51 @@ And build it as:
 cargo build --features=stm32h743v,rt --example blinky --release
 ```
 the target elf file will be generated at `./target/thumbv7em-none-eabihf/release/examples/blinky`, it can be used to program to target device later.
+
+## nRF5 SDK
+This section is for Nordic nRF5 only.
+
+Nordic nRF5 series MCUs are based on ARM cortex-m, it's no doubt it support SWD protocol, and you can use toolchains, debuggers and utils suite for cortex-m with nRF5.
+
+Like different firmware libraries for various cortex-m MCU, nRF5 has it's own SDK, you can download it from https://developer.nordicsemi.com/nRF5_SDK/. the latest version is 'nRF5_SDK_v17.x.x' when this tutorial written.
+
+```
+wget https://developer.nordicsemi.com/nRF5_SDK/nRF5_SDK_v17.x.x/nRF5_SDK_17.1.0_ddde560.zip
+mkdir -p $HOME/nrf
+unzip nRF5_SDK_17.1.0_ddde560.zip -d $HOME/nrf
+```
+
+After SDK extracted, since the 'gcc-none-eabi' GNU toolchain already added to PATH env, and it can be used system wide, you need edit `components/toolchain/gcc/Makefile.posix`, change from
+```
+GNU_INSTALL_ROOT ?= /usr/local/gcc-arm-none-eabi-9-2020-q2-update/bin/
+```
+to 
+```
+GNU_INSTALL_ROOT ?= 
+```
+
+Then use `blink-nrf5` demo in this repo
+```
+cd blink-nrf5
+make SDK_ROOT=$HOME/mcu/nRF5_SDK_17.1.0_ddde560
+```
+
+If you didn't chane `components/toolchain/gcc/Makefile.posix`, you may encounter an error as :
+```
+Cannot find: '/usr/local/gcc-arm-none-eabi-9-2020-q2-update/bin/arm-none-eabi-gcc'.
+Please set values in: "/home/cjacker/mcu/nRF5_SDK_17.1.0_ddde560/components/toolchain/gcc/Makefile.posix"
+according to the actual configuration of your system.
+```
+
+After built successfully, `nrf52832_xxaa.hex` and `nrf52832_xxaa.bin` will be generated at `_build` dir, it can be programmed by OpenOCD as
+```
+openocd -f /usr/share/openocd/scripts/interface/cmsis-dap.cfg -f /usr/share/openocd/scripts/target/nrf52.cfg -c "program _build/nrf52832_xxaa.bin verify reset exit"
+
+```
+Please refer to next section about how to install and use OpenOCD.
+
+If you have a JLink debugger, you can also use JLink and `nrfjprog` to program and debug, the `nrfjprog` can be downloaded from https://www.nordicsemi.com/Products/Development-tools/nrf-command-line-tools/download.
+
 
 # Programming
 
@@ -828,7 +874,7 @@ After OpenOCD installed, please add `/opt/openocd/bin` to PATH env.
 
 **OpenOCD usage:**
 
-Still use stm32f411 as target, build the 'baremetal-stm32f4' demo in this repo and program it:
+Use stm32f411 as example, build the 'baremetal-stm32f4' demo in this repo and program it:
 
 ```
 openocd -f /usr/share/openocd/scripts/interface/cmsis-dap.cfg -f /usr/share/openocd/scripts/target/stm32f4x.cfg -c "program app.elf verify reset exit"
