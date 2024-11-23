@@ -91,12 +91,12 @@ STM32 and various xx32 use 'arm-none-eabi' GCC toolchain, since they are all bas
 
 ### from XPack
 
-[xpack-dev-tools](https://github.com/xpack-dev-tools) provde a prebuilt 'arm-none-eabi' toolchain. you can download it from [here](https://github.com/xpack-dev-tools/arm-none-eabi-gcc-xpack/releases/download/v12.2.1-1.2/xpack-arm-none-eabi-gcc-12.2.1-1.2-linux-x64.tar.gz). 
+[xpack-dev-tools](https://github.com/xpack-dev-tools) provde a prebuilt 'arm-none-eabi' toolchain. you can download it from [here](https://github.com/xpack-dev-tools/arm-none-eabi-gcc-xpack). 
 
 After download:
 ```
 sudo mkdir -p /opt/xpack-arm-none-eabi
-sudo tar xf xpack-arm-none-eabi-gcc-12.2.1-1.2-linux-x64.tar.gz -C /opt/xpack-arm-none-eabi --strip-components=1
+sudo tar xf xpack-arm-none-eabi-gcc-13.3.1-1.1-linux-x64.tar.gz -C /opt/xpack-arm-none-eabi --strip-components=1
 ```
 and add /opt/xpack-arm-none-eabi/bin to PATH env.
 
