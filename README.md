@@ -814,7 +814,7 @@ git submodule update --init --recursive --progress
 
 # patch for ArteryTek AT32F
 wget https://raw.githubusercontent.com/cjacker/opensource-toolchain-stm32/main/openocd-0.12.0-add-arterytek-driver.patch
-cat penocd-0.12.0-add-arterytek-driver.patch|patch -p1
+cat openocd-0.12.0-add-arterytek-driver.patch|patch -p1
 # patch for HuaDa HC32L110
 wget https://raw.githubusercontent.com/cjacker/opensource-toolchain-stm32/main/openocd-0.12.0-add-hc32l110-driver.patch
 cat openocd-0.12.0-add-hc32l110-driver.patch|patch -p1
