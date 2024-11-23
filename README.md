@@ -828,13 +828,14 @@ For this tutorial, since AT32F and HC32L110 flash driver is not support by upstr
 https://github.com/openocd-org/openocd.git
 cd openocd
 git submodule update --init --recursive --progress
-
+git checkout 8a3723022689dd078c3e61268615616d5566fc94
+ 
 # patch for ArteryTek AT32F
-wget https://raw.githubusercontent.com/cjacker/opensource-toolchain-stm32/main/openocd-0.12.0-add-arterytek-driver.patch
-cat openocd-0.12.0-add-arterytek-driver.patch|patch -p1
+wget https://raw.githubusercontent.com/cjacker/opensource-toolchain-stm32/main/openocd-0.12-dev-add-at32.patch
+cat openocd-0.12-dev-add-at32.patch|patch -p1
 # patch for HuaDa HC32L110
-wget https://raw.githubusercontent.com/cjacker/opensource-toolchain-stm32/main/openocd-0.12.0-add-hc32l110-driver.patch
-cat openocd-0.12.0-add-hc32l110-driver.patch|patch -p1
+wget https://raw.githubusercontent.com/cjacker/opensource-toolchain-stm32/main/openocd-0.12-dev-add-hc32l110.patch
+cat openocd-0.12-dev-add-hc32l110.patch|patch -p1
 
 # configure and built it
 ./bootstrap
