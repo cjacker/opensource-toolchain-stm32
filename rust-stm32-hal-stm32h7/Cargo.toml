@@ -1,20 +1,22 @@
 [package]
-authors = ["Your name <your@em.ail>"]
-name = "stm32h743vit6"
+authors = ["Cjacker <cjacker@gmail.com>"]
+name = "rust-stm32-hal-stm32h7"
 edition = "2021"
 version = "0.1.0"
 
 [dependencies]
-defmt = "0.3.2"
+defmt = "0.3.4"
 defmt-rtt = "0.4.0"
 panic-probe = { version = "0.3.0", features = ["print-defmt"] }
 
 cortex-m = {version = "^0.7.7", features = ["critical-section-single-core"]}
-cortex-m-rt = "0.7.2"
+cortex-m-rt = "0.7.3"
+critical-section = "^1.1.2"
+
+#rtic = { version = "^2.0.1", features = ["thumbv7-backend"] }
 
 # Change this import as required for your MCU.
-#stm32-hal2 = { version = "^1.5.5", features = ["l4x3", "l4rt"]}
-stm32-hal2 = { version = "^1.5.5", features = ["h743v", "h7rt"]}
+hal = { package = "stm32-hal2", version = "^1.6.4", features = ["h743v", "h7rt"]}
 
 # cargo build/run
 [profile.dev]
