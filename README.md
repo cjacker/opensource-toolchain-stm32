@@ -348,25 +348,25 @@ libopencm3-miniblink is only a demo project to demo how to use this library, it'
 - Provide a clear, concise API
 - Provide source code readable by anyone cross-checking a reference manual (RM)
 
-Before using this library, you need have rust toolchain and some utilities installed. please refer to above Compiler section for toolchain and desire target installation. besides the toolchain, you also need to install `flip-link` and `probe-run` to use stm32-hal:
+Before using this library, you need have rust toolchain and some utilities installed. please refer to above Compiler section for toolchain and desire target installation. besides the toolchain, you also need to install `flip-link` and `probe-rs` to use stm32-hal:
 
 ```
 cargo install flip-link
-cargo install probe-run
+cargo install probe-rs --features cli
 ```
 
 Please make sure the `~/.cargo/bin` is in your PATH env.
 
-After everything ready, clone this repo and find the `rust-stm32-hal-stm32h7` example, this example is modified from [stm32-hal quickstart repo](https://github.com/David-OConnor/stm32-hal-quickstart) to blink LED of [WeAct MiniH7XX board](https://github.com/WeActStudio/MiniSTM32H7xx). 
+After everything ready, clone this repo and find the `rust-stm32-hal-stm32h7` example, this example is modified from [stm32-hal quickstart repo](https://github.com/David-OConnor/stm32-hal-quickstart1) to blink LED of [WeAct MiniH7XX board](https://github.com/WeActStudio/MiniSTM32H7xx). 
 
 You may need:
 - modify the below line of `Cargo.toml` to match your MCU:
 ```
-stm32-hal2 = { version = "^1.5.0", features = ["l4x3", "l4rt"]}
+hal = { package = "stm32-hal2", version = "^1.6.4", features = ["l4x3", "l4rt"]}
 ```
-For stm32h743vit6:
+For stm32h743vit6(WeAct MiniH7XX board):
 ```
-stm32-hal2 = { version = "^1.5.5", features = ["h743v", "h7rt"]}
+hal = { package = "stm32-hal2", version = "^1.6.4", features = ["h743v", "h7rt"]}
 ```
 
 Please refer to [`Cargo.toml`](https://github.com/David-OConnor/stm32-hal/blob/main/Cargo.toml) of stm32-hal project to learn how to specify features for your MCUs.
@@ -374,17 +374,18 @@ Please refer to [`Cargo.toml`](https://github.com/David-OConnor/stm32-hal/blob/m
 - modify the `runner` and `target` line of `.cargo/config.toml`
 For stm32h743vit6, it should changed from:
 ```
-runner = "probe-run --chip STM32L443CCTx"
+runner = "probe-rs run --chip STM32H723ZGTx" # to list chips, run `probe-rs chip list.`
 ```
 to:
 ```
-runner = "probe-run --chip STM32H743VITx"
+runner = "probe-rs run --chip STM32H743VITx"
 ```
 
 and set `target` to:
 ```
 target = "thumbv7em-none-eabihf"
 ```
+
 - change `memory.x`(the linker script for rust) according to your MCU.
 If you really do NOT know how to change this `memory.x` file, you can refer to a corresponding linker script of SPL or libopencm3.
 
