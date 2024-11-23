@@ -393,9 +393,26 @@ If you really do NOT know how to change this `memory.x` file, you can refer to a
 ```
 cargo build --release
 ```
-or run it on target device directly:
+
+or run it on target device directly if it connect to host via CMSIS-DAP:
 ```
 cargo run --release
+```
+
+The running result looks like:
+```
+    Finished `release` profile [optimized + debuginfo] target(s) in 0.05s
+     Running `probe-rs run --chip STM32H743VITx target/thumbv7em-none-eabihf/release/rust-stm32-hal-stm32h7`
+      Erasing ✔ [00:00:01] [###############################] 128.00 KiB/128.00 KiB @ 64.85 KiB/s (eta 0s )
+  Programming ✔ [00:00:02] [##################################] 16.00 KiB/16.00 KiB @ 7.93 KiB/s (eta 0s )    Finished in 4.147s
+<lvl> Hello, world!
+└─ rust_stm32_hal_stm32h7::__cortex_m_rt_main @ src/main.rs:31
+```
+
+If `cargo run --release` report some errors, please run `probe-rs list` to verify the target device:
+```
+The following debug probes were found:
+[0]: DAPLink CMSIS-DAP -- 0d28:0204:070000814a46bc321431313030313736a5a5a5a597969908 (CMSIS-DAP)
 ```
 
 The target elf file will be generated as `target/thumbv7em-none-eabihf/release/rust-stm32-hal-stm32h7`, it can be programmed to target device later (for example, use OpenOCD).
