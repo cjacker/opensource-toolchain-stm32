@@ -61,9 +61,9 @@ There are also a lot of STM32 clones, such as GD32 / CH32 / AT32 / MM32 etc. Mos
     +  Luat AIR105 (MH1903S)
     +  SynWit SWM181[CBT6]
  
-* ST-LINK / DAPLink adapter for programming and debugging.
-  - DAPLink is a cheap, opensource and standard way to program/debug any Cortex-M MCU.
-  - If you need work with STM8, buy a ST-Link (it also support SWIM interface used by STM8). If not, buy a DAPLink.
+* DAPLink / ST-LINK / JLink adapter for programming and debugging.
+  - DAPLink is highly recommended. it's a cheap, opensource and standard solution to program/debug any Cortex-M MCU.
+  - If you also need work with STM8, it's neccesary to have a ST-Link (it also support SWIM interface used by STM8). If not, buy a DAPLink.
   - JLink can support SWD interface, but it's too expensive and not worth to buy for beginners.
 
 * USB2TTL UART adapter
