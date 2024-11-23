@@ -398,7 +398,7 @@ or run it on target device directly:
 cargo run --release
 ```
 
-The target elf file will be generated as `target/thumbv7em-none-eabihf/release/stm32h743vit6`, it can be programmed to target device later.
+The target elf file will be generated as `target/thumbv7em-none-eabihf/release/rust-stm32-hal-stm32h7`, it can be programmed to target device later (for example, use OpenOCD).
 
 ## stm32-rs
 [stm32-rs](https://github.com/stm32-rs) is a series of community Rust support projects for STM32 microcontrollers. there are different crate for different series of STM32:
